@@ -34,3 +34,6 @@ class GameLog:
         f_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s: \n%(message)s\n---------------------')
         f_handler.setFormatter(f_format)
         return f_handler
+
+
+GameLog.load_config()
