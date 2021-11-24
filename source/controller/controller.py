@@ -4,17 +4,19 @@ import pygame
 from pygame.locals import *
 
 from ..model.maze import Maze
+from ..model.model import MainGameLogic
 from ..view.view import MainGameView
 
 
 class Controller:
     def __init__(self):
         # Init Logic
-        self.maze = Maze()
+        self._logic_ = MainGameLogic()
+        self._logic_.init_maze()
 
         # Init View
-        self.view = MainGameView()
-        self.view.init_maze(self.maze)
+        self._view_ = MainGameView()
+        self._view_.init_maze(self._logic_.get_maze())
 
     def loop(self):
         while True:
@@ -24,6 +26,5 @@ class Controller:
                     pygame.quit()
                     exit()
             # Update Logic
-
             # Update View
-            self.view.update()
+            self._view_.update()
