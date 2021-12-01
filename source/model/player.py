@@ -7,13 +7,13 @@ import numpy as np
 from config 
 
 class Player:
-    def __init__(self):
+    def __init__(self, id=0):
         self.name = PACMAN
+        self.id = id
         self.hp = 10
         self.position = np.array([200, 400])
         self.speed = 100
         self.radius = 10
-        self.color = YELLOW
         self.direction = STOP
         self.bullet_direction = UP
         self.bullets = []
@@ -28,7 +28,8 @@ class Player:
             self.direction = STOP
 
     def shoot(self):
-        pass
+        bullet = Bullet(self.position, self.bullet_direction)
+        return bullet
 
     def update(self, event_type, dt):
         if event_type in PLAYER_MOVEMENT:

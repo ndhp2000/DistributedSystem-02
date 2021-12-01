@@ -13,10 +13,12 @@ class Controller:
         # Init Logic
         self._logic_ = MainGameLogic()
         self._logic_.init_maze()
+        self._view_.init_player()
 
         # Init View
         self._view_ = MainGameView()
         self._view_.init_maze(self._logic_.get_maze())
+        self._view_.init_player(self._logic_.get_player())
 
     def getValidKey(self):
         key_pressed = pygame.key.get_pressed()

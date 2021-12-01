@@ -38,3 +38,6 @@ class MainGameLogic:
 
     def get_maze(self):
         return self._maze_
+
+    def get_player(self):
+        return self._players_[]
