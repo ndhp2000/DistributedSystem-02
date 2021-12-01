@@ -20,6 +20,8 @@ class MainGameView:
         self._screen_display_.set_caption('Zace Maze')
         self._screen_ = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), 0, 32)
         self._maze_screen_ = None
+        self._player_view_ = None
+        self._enemy_view_ = []
 
     def update(self):
         self._screen_display_.update()
@@ -32,9 +34,14 @@ class MainGameView:
         self._maze_screen_ = MazeView(maze, maze_screen_height, maze_screen_width)
         self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
 
-    def init_player(self):
-        self.players = []
-        pass
+    def init_player(self, player, enemies):
+        self._player_view_ = PlayerView(player)
+        self._player_view_.add_to_parent(self._screen_)
+        
+        for p in enemies:
+            enemy_view = PlayerView(p)
+            enemy_view.add_to_parent(self._screen_)
+            self._enemy_view_.append(enemy_view)
 
     def init_score_board(self):
         pass

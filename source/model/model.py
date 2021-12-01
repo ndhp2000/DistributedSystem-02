@@ -6,7 +6,8 @@ class MainGameLogic:
         self._maze_ = None
         self._events_ = deque()
         self._players_ = {}
-        self._bullets_ = {}
+        self._player_bullets_ = []
+        self._enemy_bullets_ = {}
 
     def init_maze(self):
         self._maze_ = Maze()
@@ -30,8 +31,10 @@ class MainGameLogic:
             elif event_type in PLAYER_SHOOT:
                 bullet = self._player_[player_id].update(event_type)
                 if player_id not in self_bullets_:
-                    self._bullets_ = deque()
-                    self._bullets_.append(bullet)
+                    self._player_bullets_ = deque()
+                    self._player_bullets_.append(bullet)
+            elif event_type in PLAYER_HIT:
+                pass
 
     def get_maze(self):
         return self._maze_

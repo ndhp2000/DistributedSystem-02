@@ -10,46 +10,16 @@ class PlayerView:
     def __init__(self):
         self.player = Player()
 
+        r = self.player.radius
+        self._view_ = pygame.Surface((r * 2, r * 2))
+        self._view_.fill(pygame.Color("white"))
+        pygame.draw.circle(self._view_, pygame.Color("black"),
+                            (int(self._view_.get_width() /2),
+                            int(self._view_.get_height() /2)),
+                            r)
+
     def update(self, dt):
-        self.position += self.directions[self.direction]*self.speed*dt
-        for bullet in self.bullets:
-            if bullet.is_disable:
-                continue
+        pass
 
-            bullet.update(dt)
-            if bullet.is_out_screen():
-                bullet.disable()
-
-        self.bullets = [bullet for bullet in self.bullets if bullet.is_out_screen() or not bullet.is_disable]
-        button_press = self.getValidKey()
-        if button_press != SHOOT:
-            self.direction = button_press
-            if self.direction != STOP:
-                self.bullet_direction = button_press
-        else:
-            self.direction = STOP
-            new_bullet = Bullet(self.position, self.bullet_direction)
-            self.bullets.append(new_bullet)
-
-    def getValidKey(self):
-        key_pressed = pygame.key.get_pressed()
-        if key_pressed[K_UP]:
-            return UP
-        if key_pressed[K_DOWN]:
-            return DOWN
-        if key_pressed[K_LEFT]:
-            return LEFT
-        if key_pressed[K_RIGHT]:
-            return RIGHT
-        if key_pressed[K_SPACE]:
-            return SHOOT
-        return STOP
-
-    def render(self, screen):
-        p = self.position.asInt()
-        pygame.draw.circle(screen, self.color, p, self.radius)
-        for bullet in self.bullets:
-            if bullet.is_out_screen():
-                continue
-
-            bullet.render(screen)
+    def add_to_parent(self, parent: pygame.Surface, location):
+        parent.blit(self._view_, location)
