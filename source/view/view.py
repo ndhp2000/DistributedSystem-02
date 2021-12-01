@@ -33,6 +33,7 @@ class MainGameView:
         self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
 
     def init_player(self):
+        self.players = []
         pass
 
     def init_score_board(self):
