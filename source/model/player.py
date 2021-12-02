@@ -1,14 +1,11 @@
 import pygame
 from pygame.locals import *
-from vector import Vector2
-from constants import *
-from bullet import Bullet
+from source.model.bullet import Bullet
 import numpy as np
-from config 
+from config import *
 
 class Player:
     def __init__(self, id=0):
-        self.name = PACMAN
         self.id = id
         self.hp = 10
         self.position = np.array([200, 400])

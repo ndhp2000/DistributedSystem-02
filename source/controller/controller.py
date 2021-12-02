@@ -13,7 +13,7 @@ class Controller:
         # Init Logic
         self._logic_ = MainGameLogic()
         self._logic_.init_maze()
-        self._view_.init_player()
+        self._logic_.init_player()
 
         # Init View
         self._view_ = MainGameView()
@@ -37,6 +37,9 @@ class Controller:
     def input_listener(self):
         key_pressed = self.getValidKey()
         self._logic_.add_event(key_pressed)
+
+    def event_listener(self):
+        pass
 
     def loop(self):
         while True:

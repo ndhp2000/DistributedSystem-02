@@ -1,5 +1,6 @@
 from source.model.maze import Maze
 from collections import deque
+from source.model.player import Player
 
 class MainGameLogic:
     def __init__(self):
@@ -40,4 +41,4 @@ class MainGameLogic:
         return self._maze_
 
     def get_player(self):
-        return self._players_[]
+        return self._players_[0]
