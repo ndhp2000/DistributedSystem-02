@@ -2,8 +2,8 @@ from ..model import Bullet
 from 
 
 class BulletView:
-    def __init__(self, bullet):
-        self.bullet = bullet
+    def __init__(self, ):
+        self.bullet = Bullet()
 
         r = self.bullet.radius
         self._view_ = pygame.Surface((r * 2, r * 2))

@@ -1,6 +1,9 @@
 import numpy as np
 
 LOGGER = [("game-debug", "./logs"), ("game-view", "./logs"), ("game-controller", "./logs"),
+          ("game-modeimport numpy as np
+
+LOGGER = [("game-debug", "./logs"), ("game-view", "./logs"), ("game-controller", "./logs"),
           ("game-model", "./logs"),
           ("game-socket", "./logs")]
 MAP_WIDTH = 32
@@ -21,21 +24,4 @@ DIRECTIONS = {
     DOWN: np.array([0, 1]), 
     LEFT: np.array([-1, 0]), 
     RIGHT: np.array([1, 0])
-}
-
-EVENT_TYPE = {
-    'PLAYER_MOVEMENT': 0,
-    'PLAYER_SHOOT': 1
-}
-
-PLAYER_MOVEMENT = {
-    STOP: STOP,
-    UP: UP,
-    DOWN: DOWN,
-    LEFT: LEFT,
-    RIGHT: RIGHT
-}
-
-PLAYER_SHOOT = {
-    SHOOT: SHOOT
 }
