@@ -1,5 +1,6 @@
 import json
 import logging
+import socket
 import threading
 from queue import Queue
 
@@ -14,13 +15,23 @@ class Receiver(threading.Thread):
         self._shutdown_flag_ = threading.Event()
 
     def receive(self):
-        return self._queue_.get()
+        return self._queue_.get(block=False, timeout=0.2)
 
     def run(self):
         while not self._shutdown_flag_.is_set():
-            data_size = int.from_bytes(self._socket_.recv(4), 'big', signed=False)
-            if not data_size:
-                break
-            raw_packet = self._socket_.recv(data_size)
-            packet = json.loads(raw_packet.decode('utf-8'))
-            self._queue_.put(packet)
+            try:
+                data_size = int.from_bytes(self._socket_.recv(4), 'big', signed=False)
+                if not data_size:
+                    break
+                raw_packet = self._socket_.recv(data_size)
+                packet = json.loads(raw_packet.decode('utf-8'))
+                logger.info('Receiver received packet {}'.format(packet))
+                self._queue_.put(packet)
+            except socket.timeout:
+                pass
+            except OSError:
+                logger.warning('SERVER ERROR - STOP RECEIVING MESSAGES')
+                self._shutdown_flag_.set()
+
+    def set_shutdown_flag(self):
+        self._shutdown_flag_.set()
