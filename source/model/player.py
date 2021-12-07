@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 from source.model.bullet import Bullet
 import numpy as np
-from config import *
+from source.config import *
 
 class Player:
     def __init__(self, id=0):
@@ -36,3 +36,4 @@ class Player:
         if event_type in PLAYER_SHOOT:
             bullet = self.shoot(event_type)
             return bullet
+

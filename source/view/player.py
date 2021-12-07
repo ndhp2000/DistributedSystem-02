@@ -1,10 +1,8 @@
 import pygame
 from pygame.locals import *
-from vector import Vector2
-from constants import *
-from bullet import Bullet
+from source.config import *
 
-from ..model import Player
+from source.model.player import Player
 
 class PlayerView:
     def __init__(self, player):

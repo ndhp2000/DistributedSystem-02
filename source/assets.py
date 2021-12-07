@@ -3,4 +3,5 @@ class MazeViewAsset:
     vertical_line = 'assets/images/line_vertical.png'
 
 class PlayerViewAsset:
-    
+    player = ''
+    bullet = ''

@@ -1,11 +1,8 @@
 import random
 import time
 from io import StringIO
-
 import numpy as np
-
 from ..config import MAP_WIDTH, MAP_HEIGHT
-
 
 class DisjointSet:
     def __init__(self):
@@ -33,7 +30,6 @@ class DisjointSet:
 
     def size(self):
         return self._n_components_
-
 
 class Maze:
     DELTA = ((-1, 0), (1, 0), (0, -1), (0, 1))
@@ -82,6 +78,11 @@ class Maze:
     def is_box_in_maze(self, p):
         return 0 <= p[0] < self._height_ and 0 <= p[1] < self._width_
 
+    def is_player_pos_valid(self, p):
+        if self._adj_matrix_[p[0], p[1]] == 0:
+            return False
+        return True
+
     def get_width(self):
         return self._width_
 
@@ -90,6 +91,7 @@ class Maze:
 
     def is_connected_to_direction(self, p, direction):
         return self._adj_matrix_[p[0], p[1], direction]
+
 
     def __str__(self):
         result = StringIO()
@@ -126,3 +128,4 @@ class Maze:
                     result.write(' *')
             result.write('\n')
         return result.getvalue()
+

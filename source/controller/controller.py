@@ -6,6 +6,7 @@ from pygame.locals import *
 from ..model.maze import Maze
 from ..model.model import MainGameLogic
 from ..view.view import MainGameView
+from source.config import *
 
 
 class Controller:
@@ -13,12 +14,12 @@ class Controller:
         # Init Logic
         self._logic_ = MainGameLogic()
         self._logic_.init_maze()
-        self._logic_.init_player()
+        # self._logic_.init_player()
 
         # Init View
         self._view_ = MainGameView()
-        self._view_.init_maze(self._logic_.get_maze())
-        self._view_.init_player(self._logic_.get_player())
+        # self._view_.init_maze(self._logic_.get_maze())
+        # self._view_.init_player(self._logic_.get_player())
 
     def getValidKey(self):
         key_pressed = pygame.key.get_pressed()
@@ -52,6 +53,6 @@ class Controller:
             # Input listener
             self.input_listener()
             # Update Logic
-            self._logic_.update()
+            # self._logic_.update()
             # Update View
             self._view_.update()

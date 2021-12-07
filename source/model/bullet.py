@@ -1,11 +1,11 @@
 import pygame
-from constants import *
-from vector import *
+from source.config import *
 
 class Bullet:
-    def __init__(self, id=0, position, direction):
+    def __init__(self, id, position, direction):
         self.position = position
         self.speed = 200
+        self.id = id
         self.radius = 2
         self.direction = direction
         self.is_disable = False
@@ -17,8 +17,8 @@ class Bullet:
         self.is_disable = True
     
     def is_out_screen(self):
-        if self.position.x < 0 or self.position.x > SCREENWIDTH:
+        if self.position.x < 0 or self.position.x > MAP_WIDTH:
             return True
-        if self.position.y < 0 or self.position.y > SCREENHEIGHT:
+        if self.position.y < 0 or self.position.y > MAP_HEIGHT:
             return True
         return False
