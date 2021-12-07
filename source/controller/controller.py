@@ -14,12 +14,12 @@ class Controller:
         # Init Logic
         self._logic_ = MainGameLogic()
         self._logic_.init_maze()
-        # self._logic_.init_player()
+        self._logic_.init_player()
 
         # Init View
         self._view_ = MainGameView()
-        # self._view_.init_maze(self._logic_.get_maze())
-        # self._view_.init_player(self._logic_.get_player())
+        self._view_.init_maze(self._logic_.get_maze())
+        self._view_.init_player(self._logic_.get_player())
 
     def getValidKey(self):
         key_pressed = pygame.key.get_pressed()
@@ -33,14 +33,16 @@ class Controller:
             return RIGHT
         if key_pressed[K_SPACE]:
             return SHOOT
-        return STOP
+        return None
 
-    def input_listener(self):
-        key_pressed = self.getValidKey()
-        self._logic_.add_event(key_pressed)
-
-    def event_listener(self):
-        pass
+    # def input_listener(self):
+    #     key_pressed = self.getValidKey()
+    #
+    #     if key_pressed is not None:
+    #         self._logic_.add_event(0, key_pressed)
+    #
+    # def event_listener(self):
+    #     pass
 
     def loop(self):
         while True:
@@ -51,8 +53,9 @@ class Controller:
                     exit()
                     
             # Input listener
-            self.input_listener()
+            # self.input_listener()
             # Update Logic
-            # self._logic_.update()
+            key_pressed = self.getValidKey()
+            self._logic_.update(key_pressed)
             # Update View
-            self._view_.update()
+            self._view_.update(self._logic_.get_player())

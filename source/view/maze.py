@@ -8,6 +8,7 @@ class MazeView(BaseView):
         super().__init__(screen_height, screen_width)
         self._maze_ = maze
         self._box_length_ = int(self._screen_.get_height() / self._maze_.get_height())
+        #self._box_width = int(self._screen_.get_width() / self._maze_.get_height())
         self._add_maze_()
 
     def _add_maze_(self):

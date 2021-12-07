@@ -10,8 +10,8 @@ class PlayerView:
 
         r = self.player.radius
         self._view_ = pygame.Surface((r * 2, r * 2))
-        self._view_.fill(pygame.Color("white"))
-        pygame.draw.circle(self._view_, pygame.Color("black"),
+        self._view_.fill(pygame.Color("black"))
+        pygame.draw.circle(self._view_, pygame.Color("white"),
                             (int(self._view_.get_width() /2),
                             int(self._view_.get_height() /2)),
                             r)

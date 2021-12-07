@@ -5,35 +5,43 @@ import numpy as np
 from source.config import *
 
 class Player:
-    def __init__(self, id=0):
+    def __init__(self, pos, id=0):
         self.id = id
         self.hp = 10
-        self.position = np.array([200, 400])
-        self.speed = 100
+        self.position = pos
+        self.speed = 1
         self.radius = 10
+        self.action = STOP
         self.direction = STOP
-        self.bullet_direction = UP
         self.bullets = []
 
-    def move(self, event_type, dt):
+    def pre_move(self, event_type=None, dt=1):
+        position = self.position
+        if self.direction == STOP:
+            position += DIRECTIONS[event_type] * self.speed * dt
+
+        if event_type is None:
+            position += DIRECTIONS[self.direction] * self.speed * dt
+            return position
+
+        if abs(event_type) == abs(self.direction):
+            position += DIRECTIONS[event_type] * self.speed * dt
+        elif event_type == STOP:
+            pass
+
+        return position
+
+    def move(self, pos, event_type=None):
+        if self.direction == STOP:
+            self.direction = event_type
         if event_type == -self.direction:
             self.direction = event_type
-            self.position += DIRECTIONS[self.direction] * self.speed * dt
-        elif event_type == self.direction:
-            self.position += DIRECTIONS[self.direction] * self.speed * dt
         elif event_type == STOP:
-            self.direction = STOP
+            self.action = STOP
+
+        self.position = pos
 
     def shoot(self):
         bullet = Bullet(self.position, self.bullet_direction)
         return bullet
-
-    def update(self, event_type, dt):
-        if event_type in PLAYER_MOVEMENT:
-            self.move(event_type, dt)
-            return None
-
-        if event_type in PLAYER_SHOOT:
-            bullet = self.shoot(event_type)
-            return bullet
 

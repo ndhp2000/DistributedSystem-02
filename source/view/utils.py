@@ -7,3 +7,4 @@ class BaseView:
 
     def _add_child_(self, child: pygame.Surface, location):
         self._screen_.blit(child, child.get_rect(center=location))
+

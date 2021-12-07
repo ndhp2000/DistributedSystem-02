@@ -23,7 +23,10 @@ class MainGameView:
         self._player_view_ = None
         self._enemy_view_ = []
 
-    def update(self):
+    def update(self, player):
+        self._player_view_ = PlayerView(player)
+        world_pos = self.convert_maze_to_world_pos(player.position[0], player.position[1])
+        self._player_view_.add_to_parent(self._screen_, location=world_pos)
         self._screen_display_.update()
 
     def init_maze(self, maze):
@@ -34,9 +37,10 @@ class MainGameView:
         self._maze_screen_ = MazeView(maze, maze_screen_height, maze_screen_width)
         self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
 
-    def init_player(self, player, enemies):
+    def init_player(self, player, enemies=[]):
         self._player_view_ = PlayerView(player)
-        self._player_view_.add_to_parent(self._screen_)
+        world_pos = self.convert_maze_to_world_pos(player.position[0], player.position[1])
+        self._player_view_.add_to_parent(self._screen_, location=world_pos)
         
         for p in enemies:
             enemy_view = PlayerView(p)
@@ -51,7 +55,7 @@ class MainGameView:
         cell_height = int( maze_screen_height / MAP_HEIGHT)
         cell_width = int( maze_screen_width / MAP_WIDTH )
         world_x = (maze_x * cell_height + cell_height / 2)
-        world_y = (maze_y * cell_width + cell_width / 2)
+        world_y = (maze_y * cell_height+ cell_height / 2)
 
         return (world_x, world_y)
 
