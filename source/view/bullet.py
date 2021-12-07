@@ -1,5 +1,4 @@
 from ..model import Bullet
-from 
 
 class BulletView:
     def __init__(self, bullet):

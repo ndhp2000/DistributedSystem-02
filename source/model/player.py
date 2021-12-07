@@ -17,12 +17,12 @@ class Player:
 
     def pre_move(self, event_type=None, dt=1):
         position = self.position
-        if self.direction == STOP:
-            position += DIRECTIONS[event_type] * self.speed * dt
-
         if event_type is None:
             position += DIRECTIONS[self.direction] * self.speed * dt
             return position
+
+        if self.direction == STOP:
+            position += DIRECTIONS[event_type] * self.speed * dt
 
         if abs(event_type) == abs(self.direction):
             position += DIRECTIONS[event_type] * self.speed * dt

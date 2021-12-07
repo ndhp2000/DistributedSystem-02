@@ -24,7 +24,7 @@ class MainGameView:
         self._enemy_view_ = []
 
     def update(self, player):
-        self._player_view_ = PlayerView(player)
+        self._maze_screen_.add_to_parent(self._screen_, (self.maze_screen_offset_y, self.maze_screen_offset_x))
         world_pos = self.convert_maze_to_world_pos(player.position[0], player.position[1])
         self._player_view_.add_to_parent(self._screen_, location=world_pos)
         self._screen_display_.update()
@@ -32,10 +32,10 @@ class MainGameView:
     def init_maze(self, maze):
         maze_screen_height = int(self._screen_.get_height() * self._MAZE_SCREEN_RATIO_[0])
         maze_screen_width = int(self._screen_.get_width() * self._MAZE_SCREEN_RATIO_[1])
-        maze_screen_offset_y = self._MAZE_SCREEN_OFFSET_[0] * self._screen_.get_height()
-        maze_screen_offset_x = self._MAZE_SCREEN_OFFSET_[1] * self._screen_.get_width()
+        self.maze_screen_offset_y = self._MAZE_SCREEN_OFFSET_[0] * self._screen_.get_height()
+        self.maze_screen_offset_x = self._MAZE_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._maze_screen_ = MazeView(maze, maze_screen_height, maze_screen_width)
-        self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
+        self._maze_screen_.add_to_parent(self._screen_, (self.maze_screen_offset_y, self.maze_screen_offset_x))
 
     def init_player(self, player, enemies=[]):
         self._player_view_ = PlayerView(player)

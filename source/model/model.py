@@ -3,6 +3,7 @@ from collections import deque
 from source.model.player import Player
 from source.config import *
 import numpy as np
+import pygame
 
 class MainGameLogic:
     def __init__(self):
@@ -11,6 +12,7 @@ class MainGameLogic:
         self._players_ = {}
         self._player_bullets_ = []
         self._enemy_bullets_ = {}
+        self.clock = pygame.time.Clock()
 
     def init_maze(self):
         self._maze_ = Maze()
@@ -56,16 +58,21 @@ class MainGameLogic:
     #         #     pass
 
     def update(self, key_pressed=None):
+        dt = self.clock.tick(20) / 1000.0
         player_id = 0
         player = self._players_[0]
 
         if key_pressed is not None:
-            new_pos = player.pre_move(key_pressed, 0.5)
+            new_pos = player.pre_move(key_pressed, dt)
             direction = key_pressed
             is_valid = self._maze_.is_player_pos_valid(new_pos, direction)
 
             if is_valid:
                 player.move(new_pos, direction)
+                return
+            else:
+                player.action = STOP
+                player.direction = STOP
                 return
 
         new_pos = player.pre_move(player.direction, 0.5)
@@ -73,6 +80,7 @@ class MainGameLogic:
 
         if not is_valid:
             player.action = STOP
+            player.direction = STOP
         else:
             player.move(new_pos, player.direction)
 

@@ -90,7 +90,10 @@ class Maze:
             direction = self.DIRECTION_RIGHT
         if player_direction == STOP:
             return True
-        print(p)
+
+        if not self.is_box_in_maze(p):
+            return False
+
         if self._adj_matrix_[int(p[0]), int(p[1]), direction] == 0:
             return False
         return True
