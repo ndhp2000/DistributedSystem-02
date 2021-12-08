@@ -55,7 +55,7 @@ class MainGameView:
         cell_height = int( maze_screen_height / MAP_HEIGHT)
         cell_width = int( maze_screen_width / MAP_WIDTH )
         world_x = (maze_x * cell_height + cell_height / 2)
-        world_y = (maze_y * cell_height+ cell_height / 2)
+        world_y = (maze_y * cell_width + cell_width / 2)
 
         return (world_x, world_y)
 

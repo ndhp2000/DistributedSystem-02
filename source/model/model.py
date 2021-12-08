@@ -19,7 +19,7 @@ class MainGameLogic:
     
     def init_player(self):
         pos = np.array([0, 0])
-        main_player = Player(pos.astype('float64'))
+        main_player = Player(pos.astype('float64'), self._maze_._adj_matrix_)
         self._players_[0] = main_player
 
     def add_player(self):
@@ -57,32 +57,46 @@ class MainGameLogic:
     #         # elif event_type in PLAYER_HIT:
     #         #     pass
 
+    # def update(self, key_pressed=None):
+    #     dt = self.clock.tick(20) / 1000.0
+    #     player_id = 0
+    #     player = self._players_[0]
+    #
+    #     if key_pressed is not None:
+    #         new_pos = player.pre_move(key_pressed, dt)
+    #         direction = key_pressed
+    #         is_valid = self._maze_.is_player_pos_valid(new_pos, direction)
+    #
+    #         if is_valid:
+    #             player.move(new_pos, direction)
+    #             return
+    #         else:
+    #             player.action = STOP
+    #             player.direction = STOP
+    #             return
+    #
+    #     if player.direction != STOP:
+    #         new_pos = player.pre_move(player.direction, 0.5)
+    #         is_valid = self._maze_.is_player_pos_valid(new_pos, player.direction)
+    #
+    #         if not is_valid:
+    #             player.action = STOP
+    #             player.direction = STOP
+    #         else:
+    #             player.move(new_pos, player.direction)
+
     def update(self, key_pressed=None):
-        dt = self.clock.tick(20) / 1000.0
+        dt = self.clock.tick(30) / 1000.0
         player_id = 0
         player = self._players_[0]
 
         if key_pressed is not None:
-            new_pos = player.pre_move(key_pressed, dt)
-            direction = key_pressed
-            is_valid = self._maze_.is_player_pos_valid(new_pos, direction)
+            player.move(key_pressed, dt)
+            return
 
-            if is_valid:
-                player.move(new_pos, direction)
-                return
-            else:
-                player.action = STOP
-                player.direction = STOP
-                return
-
-        new_pos = player.pre_move(player.direction, 0.5)
-        is_valid = self._maze_.is_player_pos_valid(new_pos, player.direction)
-
-        if not is_valid:
-            player.action = STOP
-            player.direction = STOP
-        else:
-            player.move(new_pos, player.direction)
+        if player.future_change_direction != STOP:
+            player.move(player.future_change_direction, dt)
+            return
 
     def get_maze(self):
         return self._maze_

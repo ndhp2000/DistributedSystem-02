@@ -78,25 +78,25 @@ class Maze:
     def is_box_in_maze(self, p):
         return 0 <= p[0] < self._height_ and 0 <= p[1] < self._width_
 
-    def is_player_pos_valid(self, p, player_direction):
-        direction = None
-        if player_direction == UP:
-            direction = self.DIRECTION_UP
-        if player_direction == DOWN:
-            direction = self.DIRECTION_DOWN
-        if player_direction == LEFT:
-            direction = self.DIRECTION_LEFT
-        if player_direction == RIGHT:
-            direction = self.DIRECTION_RIGHT
-        if player_direction == STOP:
-            return True
-
-        if not self.is_box_in_maze(p):
-            return False
-
-        if self._adj_matrix_[int(p[0]), int(p[1]), direction] == 0:
-            return False
-        return True
+    # def is_player_pos_valid(self, p, player_direction):
+    #     direction = None
+    #     if player_direction == UP:
+    #         direction = self.DIRECTION_UP
+    #     if player_direction == DOWN:
+    #         direction = self.DIRECTION_DOWN
+    #     if player_direction == LEFT:
+    #         direction = self.DIRECTION_LEFT
+    #     if player_direction == RIGHT:
+    #         direction = self.DIRECTION_RIGHT
+    #     if player_direction == STOP:
+    #         return True
+    #
+    #     if not self.is_box_in_maze(p):
+    #         return False
+    #
+    #     if self._adj_matrix_[int(p[0]), int(p[1]), direction] == 0:
+    #         return False
+    #     return True
 
     def get_width(self):
         return self._width_
@@ -106,6 +106,17 @@ class Maze:
 
     def is_connected_to_direction(self, p, direction):
         return self._adj_matrix_[p[0], p[1], direction]
+
+    @staticmethod
+    def convert_player_direction_2_maze(direction):
+        if direction == UP:
+            return Maze.DIRECTION_UP
+        elif direction == DOWN:
+            return Maze.DIRECTION_DOWN
+        elif direction == RIGHT:
+            return Maze.DIRECTION_RIGHT
+        elif direction == LEFT:
+            return Maze.DIRECTION_LEFT
 
     def __str__(self):
         result = StringIO()
