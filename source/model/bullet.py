@@ -22,3 +22,6 @@ class Bullet:
         if self.position.y < 0 or self.position.y > MAP_HEIGHT:
             return True
         return False
+
+    def collision_with_wall(self):
+        pass

@@ -12,8 +12,8 @@ class Player:
         self._speed = 1
         self._action = STOP
         self._bullets = []
-        self._target = None
-        self._previous_target = pos.copy()
+        self._target = pos.copy()
+        self._previous_target = None
         self._maze_map = adj_matrix
 
         self.future_change_direction = STOP
@@ -51,39 +51,77 @@ class Player:
         self.position = pos.copy()
 
     def move(self, direction, dt):
+        if direction is not None:
+            self.future_change_direction = direction
+
+        if self.direction == STOP and self.future_change_direction == STOP:
+            return
+
+        if self.direction == STOP and self.future_change_direction != STOP:
+            if self.is_valid_direction(self.future_change_direction):
+                self.direction = self.future_change_direction
+                self._previous_target = self._target
+            else:
+                self.future_change_direction = STOP
+                return
+
         self.position += DIRECTIONS[self.direction] * self._speed * dt
-        self.future_change_direction = direction
 
         if self.meet_target():
-            self._previous_target = self._target
-            self._target = self.get_next_target(self._previous_target, direction)
+            # check new input direction
+            if self.is_valid_direction(self.future_change_direction):
+                self._previous_target = self._target
+                self._target = self.get_next_target(self._previous_target, self.future_change_direction)
+                self.direction = self.future_change_direction
 
-            if (self._target != self._previous_target).any():
-                self.direction = direction
+            # if new input direction is not valid use older direction:
+            elif self.is_valid_direction(self.direction):
+                self._previous_target = self._target
+                self._target = self.get_next_target(self._previous_target, self.direction)
+
+            # if older direction lead to deadend => stop
             else:
-                self._target = self.get_next_target(self.position, self.direction)
-
-            if (self._target == self._previous_target).all():
                 self.direction = STOP
-            self.set_position(self._previous_target)
+                self.future_change_direction = STOP
+
         else:
-            if self.is_opposite_direction(direction):
+            if self.future_change_direction == -self.direction:
                 self.reverse_direction()
 
-    def is_opposite_direction(self, direction):
-        if (direction == -self.direction):
-            self.direction *= -1
-            temp = self._previous_target
-            self._previous_target = self._target
-            self._target = temp
+    def reverse_direction(self):
+        self.direction *= -1
+        temp = self._previous_target
+        self._previous_target = self._target
+        self._target = temp
+
+    def is_valid_direction(self, player_direction):
+        maze_direction = None
+        if player_direction == UP:
+            maze_direction = Maze.DIRECTION_UP
+        if player_direction == DOWN:
+            maze_direction = Maze.DIRECTION_DOWN
+        if player_direction == LEFT:
+            maze_direction = Maze.DIRECTION_LEFT
+        if player_direction == RIGHT:
+            maze_direction = Maze.DIRECTION_RIGHT
+        if player_direction == STOP:
+            return True
+
+        if self._maze_map[int(self.position[0]), int(self.position[1]), maze_direction] == 0:
+            return False
+        return True
 
     def meet_target(self):
-        if self._target == self.:
-            distance2Target = np.sum(np.square(self._previous_target - self._target))
-            self2Previous = np.sum(np.square(self._previous_target - self.position))
+        if self._previous_target is None:
+            return False
 
-            return self2Previous >= distance2Target
-        return False
+        if (self._target != self._previous_target).any():
+            distance_target = np.sum(np.square(self._previous_target - self._target))
+            self_previous = np.sum(np.square(self._previous_target - self.position))
+
+            return self_previous >= distance_target
+        else:
+            return True
 
     def get_next_target(self, pos, player_direction):
         if player_direction == STOP:

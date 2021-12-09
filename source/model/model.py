@@ -90,13 +90,7 @@ class MainGameLogic:
         player_id = 0
         player = self._players_[0]
 
-        if key_pressed is not None:
-            player.move(key_pressed, dt)
-            return
-
-        if player.future_change_direction != STOP:
-            player.move(player.future_change_direction, dt)
-            return
+        player.move(key_pressed, dt)
 
     def get_maze(self):
         return self._maze_
