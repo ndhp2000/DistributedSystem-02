@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from source.model.maze import Maze
 from collections import deque
 from source.model.player import Player
@@ -58,40 +57,21 @@ class MainGameLogic:
     #         # elif event_type in PLAYER_HIT:
     #         #     pass
 
-    # def update(self, key_pressed=None):
-    #     dt = self.clock.tick(20) / 1000.0
-    #     player_id = 0
-    #     player = self._players_[0]
-    #
-    #     if key_pressed is not None:
-    #         new_pos = player.pre_move(key_pressed, dt)
-    #         direction = key_pressed
-    #         is_valid = self._maze_.is_player_pos_valid(new_pos, direction)
-    #
-    #         if is_valid:
-    #             player.move(new_pos, direction)
-    #             return
-    #         else:
-    #             player.action = STOP
-    #             player.direction = STOP
-    #             return
-    #
-    #     if player.direction != STOP:
-    #         new_pos = player.pre_move(player.direction, 0.5)
-    #         is_valid = self._maze_.is_player_pos_valid(new_pos, player.direction)
-    #
-    #         if not is_valid:
-    #             player.action = STOP
-    #             player.direction = STOP
-    #         else:
-    #             player.move(new_pos, player.direction)
-
-    def update(self, key_pressed=None):
-        dt = self.clock.tick(30) / 1000.0
+    def update(self, event=None):
+        dt = self.clock.tick(20) / 1000.0
         player_id = 0
         player = self._players_[0]
 
-        player.move(key_pressed, dt)
+        if event in PLAYER_MOVEMENT:
+            player.move(event, dt)
+        if event is None:
+            player.move(event, dt)
+        # elif event in PLAYER_SHOOT:
+        #     new_bullet = player.shoot()
+        #     self._player_bullets_.append(new_bullet)
+        #
+        # for bullet in self._player_bullets_:
+        #     bullet.move(dt)
 
     def get_maze(self):
         return self._maze_

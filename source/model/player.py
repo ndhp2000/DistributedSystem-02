@@ -68,6 +68,11 @@ class Player:
         self.position += DIRECTIONS[self.direction] * self._speed * dt
 
         if self.meet_target():
+            print(self._target)
+            print(self._previous_target)
+            print(self.position)
+            print(self.direction)
+            print(self.future_change_direction)
             # check new input direction
             if self.is_valid_direction(self.future_change_direction):
                 self._previous_target = self._target
@@ -118,7 +123,7 @@ class Player:
         if (self._target != self._previous_target).any():
             distance_target = np.sum(np.square(self._previous_target - self._target))
             self_previous = np.sum(np.square(self._previous_target - self.position))
-
+            print(self_previous >= distance_target)
             return self_previous >= distance_target
         else:
             return True

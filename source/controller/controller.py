@@ -23,8 +23,8 @@ class Controller:
         self._view_.init_player(self._logic_.get_player())
 
         # Init Network
-        self._game_network_ = GameNetwork()
-        self._instance_id_ = self._game_network_.join_game()
+        # self._game_network_ = GameNetwork()
+        # self._instance_id_ = self._game_network_.join_game()
 
     def getValidKey(self):
         key_pressed = pygame.key.get_pressed()
@@ -67,4 +67,9 @@ class Controller:
 
             time.sleep(0.5)
             self._game_network_.send({'type': '_EXAMPLE_BROADCAST_', 'instance_id': self._instance_id_})
+            json = {
+                'type': PLAYER_MOVEMENT,
+                'instance_id': 123
+            }
+
 

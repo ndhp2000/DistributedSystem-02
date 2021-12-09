@@ -20,3 +20,7 @@ TP:
 HP: 
 + Server: queue event, broadcast
 + Client: send (queue), receive (queue), package class
+
+- Task 4:
+
+TP: + Client: 
