@@ -17,10 +17,10 @@ SHOOT = 3
 
 DIRECTIONS = {
     STOP: np.array([0, 0]),
-    UP: np.array([-1, 0]),
-    DOWN: np.array([1, 0]),
-    LEFT: np.array([0, -1]),
-    RIGHT: np.array([0, 1])
+    UP: np.array([0, -1]),
+    DOWN: np.array([0, 1]),
+    LEFT: np.array([-1, 0]),
+    RIGHT: np.array([1, 0])
 }
 
 EVENT_TYPE = {

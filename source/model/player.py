@@ -107,7 +107,7 @@ class Player:
         if player_direction == STOP:
             return True
 
-        if self._maze_map[int(self.position[0]), int(self.position[1]), maze_direction] == 0:
+        if self._maze_map[int(self.position[1]), int(self.position[0]), maze_direction] == 0:
             return False
         return True
 
@@ -128,16 +128,16 @@ class Player:
             return np.array([pos[0], pos[1]])
 
         direction = Maze.convert_player_direction_2_maze(player_direction)
-        if self._maze_map[int(pos[0]), int(pos[1]), direction] == 1:
+        if self._maze_map[int(pos[1]), int(pos[0]), direction] == 1:
             new_pos = (-1, -1)
             if direction == Maze.DIRECTION_UP:
-                new_pos = (pos[0] - 1, pos[1])
-            elif direction == Maze.DIRECTION_DOWN:
-                new_pos = (pos[0] + 1, pos[1])
-            elif direction == Maze.DIRECTION_LEFT:
                 new_pos = (pos[0], pos[1] - 1)
-            elif direction == Maze.DIRECTION_RIGHT:
+            elif direction == Maze.DIRECTION_DOWN:
                 new_pos = (pos[0], pos[1] + 1)
+            elif direction == Maze.DIRECTION_LEFT:
+                new_pos = (pos[0] - 1, pos[1])
+            elif direction == Maze.DIRECTION_RIGHT:
+                new_pos = (pos[0] + 1, pos[1])
             return np.array([new_pos[0], new_pos[1]])
         else:
             return np.array([pos[0], pos[1]])
