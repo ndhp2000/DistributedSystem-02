@@ -47,3 +47,4 @@ class MazeView(BaseView):
 
     def add_to_parent(self, parent: pygame.Surface, location):
         parent.blit(self._screen_, location)
+

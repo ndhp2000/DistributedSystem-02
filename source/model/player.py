@@ -148,3 +148,4 @@ class Player:
 
     def collision_bullet(self):
         pass
+

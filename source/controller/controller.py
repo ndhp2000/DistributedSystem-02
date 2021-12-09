@@ -1,11 +1,12 @@
 from sys import exit
-
+import time
 import pygame
 from pygame.locals import *
 
 from ..model.maze import Maze
 from ..model.model import MainGameLogic
 from ..view.view import MainGameView
+from ..network.network import GameNetwork
 from source.config import *
 
 
@@ -20,6 +21,10 @@ class Controller:
         self._view_ = MainGameView()
         self._view_.init_maze(self._logic_.get_maze())
         self._view_.init_player(self._logic_.get_player())
+
+        # Init Network
+        self._game_network_ = GameNetwork()
+        self._instance_id_ = self._game_network_.join_game()
 
     def getValidKey(self):
         key_pressed = pygame.key.get_pressed()
@@ -59,3 +64,7 @@ class Controller:
             self._logic_.update(key_pressed)
             # Update View
             self._view_.update(self._logic_.get_player())
+
+            time.sleep(0.5)
+            self._game_network_.send({'type': '_EXAMPLE_BROADCAST_', 'instance_id': self._instance_id_})
+

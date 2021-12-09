@@ -36,4 +36,3 @@ class GameLog:
         return f_handler
 
 
-GameLog.load_config()

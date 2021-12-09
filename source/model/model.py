@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from source.model.maze import Maze
 from collections import deque
 from source.model.player import Player

@@ -25,3 +25,4 @@ class Bullet:
 
     def collision_with_wall(self):
         pass
+

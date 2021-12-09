@@ -12,6 +12,7 @@ Dùng virtualvenv
 - Task 2: Dựng mê cung.
 
 - Task 3: 
+
 TP: 
 + Client: controller, serialize object -> json => gửi lên server
 + Frontend cho game, từ từ tính điểm => PLAYER_HIT

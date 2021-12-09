@@ -64,3 +64,4 @@ class MainGameView:
 
     def init_notification(self):
         pass
+

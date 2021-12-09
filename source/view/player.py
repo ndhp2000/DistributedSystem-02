@@ -18,3 +18,4 @@ class PlayerView:
 
     def add_to_parent(self, parent: pygame.Surface, location):
         parent.blit(self._view_, (location[0] - self._view_.get_width() / 2, location[1] - self._view_.get_height() /2))
+
