@@ -5,6 +5,7 @@ from source.view.maze import MazeView
 from source.view.notification import NotificationView
 from source.view.player import PlayerView
 from source.view.scoreboard import ScoreboardView
+from source.view.utils import convert_maze_to_world_pos
 
 
 class MainGameView:
@@ -26,12 +27,19 @@ class MainGameView:
         self._scoreboard_screen_ = None
         self._player_view_ = None
         self._notification_screen_ = None
-        self._enemy_view_ = []
+        self._enemies_view_ = None
+        self._bullets_ = None
 
     def update(self, player=None):
-        # self._maze_screen_.add_to_parent(self._screen_, (self.maze_screen_offset_y, self.maze_screen_offset_x))
-        # world_pos = self.convert_maze_to_world_pos(player.position[0], player.position[1])
-        # self._player_view_.add_to_parent(self._screen_, location=world_pos)
+        maze_screen_offset_y = self._MAZE_SCREEN_OFFSET_[0] * self._screen_.get_height()
+        maze_screen_offset_x = self._MAZE_SCREEN_OFFSET_[1] * self._screen_.get_width()
+        self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
+
+        world_pos = convert_maze_to_world_pos(player.position[0], player.position[1])
+        self._player_view_.add_to_parent(self._screen_, location=world_pos)
+        self._bullets_.draw(self._screen_)
+        self._enemies_view_.draw(self._screen_)
+        self._screen_display_.update()
 
         # Update Notification View
         notification_screen_offset_y = self._NOTIFICATION_SCREEN_OFFSET_[0] * self._screen_.get_height()
@@ -44,8 +52,6 @@ class MainGameView:
         scoreboard_screen_offset_x = self._SCOREBOARD_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._scoreboard_screen_.add_to_parent(self._screen_, (scoreboard_screen_offset_x, scoreboard_screen_offset_y))
 
-        self._screen_display_.update()
-
     def init_maze(self, maze):
         maze_screen_height = int(self._screen_.get_height() * self._MAZE_SCREEN_RATIO_[0])
         maze_screen_width = int(self._screen_.get_width() * self._MAZE_SCREEN_RATIO_[1])
@@ -54,27 +60,14 @@ class MainGameView:
         self._maze_screen_ = MazeView(maze, maze_screen_height, maze_screen_width)
         self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
 
-    def init_player(self, player, enemies=[]):
+    def init_player(self, player, enemies_group):
         self._player_view_ = PlayerView(player)
-        world_pos = self.convert_maze_to_world_pos(player.position[0], player.position[1])
+        world_pos = convert_maze_to_world_pos(player.position[0], player.position[1])
         self._player_view_.add_to_parent(self._screen_, location=world_pos)
+        self._enemies_view_ = enemies_group
 
-        for p in enemies:
-            enemy_view = PlayerView(p)
-            enemy_view.add_to_parent(self._screen_)
-            self._enemy_view_.append(enemy_view)
-
-    @staticmethod
-    def convert_maze_to_world_pos(maze_x, maze_y):
-        maze_screen_height = int(WIN_HEIGHT * MainGameView._MAZE_SCREEN_RATIO_[0])
-        maze_screen_width = int(WIN_WIDTH * MainGameView._MAZE_SCREEN_RATIO_[1])
-
-        cell_height = int(maze_screen_height / MAP_HEIGHT)
-        cell_width = int(maze_screen_width / MAP_WIDTH)
-        world_x = (maze_x * cell_height + cell_height / 2)
-        world_y = (maze_y * cell_width + cell_width / 2)
-
-        return (world_x, world_y)
+    def init_bullets(self, bullets_group):
+        self._bullets_ = bullets_group
 
     def init_scoreboard(self):
         scoreboard_screen_height = int(self._screen_.get_height() * self._SCOREBOARD_SCREEN_RATIO_[0])

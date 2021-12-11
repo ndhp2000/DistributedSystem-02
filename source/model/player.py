@@ -4,9 +4,15 @@ from source.model.bullet import Bullet
 import numpy as np
 from source.config import *
 from source.model.maze import Maze
+from source.view.utils import convert_maze_to_world_pos
 
-class Player:
-    def __init__(self, pos, adj_matrix, id=0):
+
+class Entity(pygame.sprite.Sprite):
+    def __init__(self, pos, bullets_group, adj_matrix, group=None, id=0):
+        if group is None:
+            pygame.sprite.Sprite.__init__(self)
+        else:
+            pygame.sprite.Sprite.__init__(self, group)
         self._id = id
         self._hp = 10
         self._speed = 1
@@ -15,40 +21,34 @@ class Player:
         self._target = pos.copy()
         self._previous_target = None
         self._maze_map = adj_matrix
+        self._bullets_group = bullets_group
+        self.clock = pygame.time.Clock()
 
         self.future_change_direction = STOP
         self.direction = STOP
         self.position = pos
         self.radius = 15
 
-    # def pre_move(self, event_type=None, dt=1):
-    #     position = self.position
-    #     if event_type is None:
-    #         position += DIRECTIONS[self.direction] * self.speed * dt
-    #         return position
-    #
-    #     if self.direction == STOP:
-    #         position += DIRECTIONS[event_type] * self.speed * dt
-    #
-    #     if abs(event_type) == abs(self.direction):
-    #         position += DIRECTIONS[event_type] * self.speed * dt
-    #     elif event_type == STOP:
-    #         pass
-    #
-    #     return position
-
-    # def move(self, pos, event_type=None):
-    #     if self.direction == STOP:
-    #         self.direction = event_type
-    #     if event_type == -self.direction:
-    #         self.direction = event_type
-    #     elif event_type == STOP:
-    #         self.action = STOP
-    #
-    #     self.position = pos
+        self.image = pygame.Surface((self.radius * 2, self.radius * 2))
+        self.image.fill(pygame.Color("black"))
+        pygame.draw.circle(self.image, pygame.Color("white"),
+                           (int(self.image.get_width() / 2),
+                            int(self.image.get_height() / 2)),
+                           self.radius)
+        self.rect = self.image.get_rect(center=self.position)
 
     def set_position(self, pos):
         self.position = pos.copy()
+
+    def update(self, event, dt):
+        if event in PLAYER_MOVEMENT:
+            self.move(event, dt)
+            return
+
+        if event in PLAYER_SHOOT:
+            self.shoot()
+
+        self.move(None, dt)
 
     def move(self, direction, dt):
         if direction is not None:
@@ -68,11 +68,6 @@ class Player:
         self.position += DIRECTIONS[self.direction] * self._speed * dt
 
         if self.meet_target():
-            print(self._target)
-            print(self._previous_target)
-            print(self.position)
-            print(self.direction)
-            print(self.future_change_direction)
             # check new input direction
             if self.is_valid_direction(self.future_change_direction):
                 self._previous_target = self._target
@@ -92,6 +87,9 @@ class Player:
         else:
             if self.future_change_direction == -self.direction:
                 self.reverse_direction()
+
+        world_position = convert_maze_to_world_pos(self.position[0], self.position[1])
+        self.rect = self.image.get_rect(center=world_position)
 
     def reverse_direction(self):
         self.direction *= -1
@@ -123,7 +121,7 @@ class Player:
         if (self._target != self._previous_target).any():
             distance_target = np.sum(np.square(self._previous_target - self._target))
             self_previous = np.sum(np.square(self._previous_target - self.position))
-            print(self_previous >= distance_target)
+
             return self_previous >= distance_target
         else:
             return True
@@ -147,10 +145,33 @@ class Player:
         else:
             return np.array([pos[0], pos[1]])
 
+    def get_bullet_target(self):
+        cell_pos = np.array([int(self.position[0]), int(self.position[1])])
+
+        if self.direction == STOP:
+            return None
+        direction = Maze.convert_player_direction_2_maze(self.direction)
+        while self._maze_map[cell_pos[1], cell_pos[0], direction] == 1:
+            cell_pos += DIRECTIONS[self.direction]
+        return cell_pos
+
     def shoot(self):
-        bullet = Bullet(self.position, self.bullet_direction)
-        return bullet
+        target = self.get_bullet_target()
 
-    def collision_bullet(self):
-        pass
+        if target is None:
+            return
 
+        bullet = Bullet(self._bullets_group, 0, self.position, target, self.direction)
+
+    def hit(self, damage):
+        print(self.name, 'hit')
+
+class Player(Entity):
+    def __init__(self, pos, bullets_group, adj_matrix, id=0):
+        super().__init__(pos, bullets_group, adj_matrix, None, id)
+        self.name = 'Player'
+
+class Enemy(Entity):
+    def __init__(self, pos, bullets_group, enemies_group, adj_matrix, id=0):
+        super().__init__(pos, bullets_group, adj_matrix, enemies_group, id)
+        self.name = 'Enemy'
