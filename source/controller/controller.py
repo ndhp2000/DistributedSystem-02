@@ -21,7 +21,7 @@ class Controller:
         # Init View
         self._view_ = MainGameView()
         self._view_.init_maze(self._logic_.get_maze())
-        self._view_.init_player(self._logic_.get_player())
+        self._view_.init_player(self._logic_.get_player(), self._logic_.get_enemies_group())
         self._view_.init_bullets(self._logic_.get_bullets())
 
         # Init Network

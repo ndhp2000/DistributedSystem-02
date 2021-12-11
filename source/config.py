@@ -44,3 +44,4 @@ PLAYER_SHOOT = {
 }
 
 MAZE_SCREEN_RATIO = (2 / 3, 1)
+DAMAGE = 1

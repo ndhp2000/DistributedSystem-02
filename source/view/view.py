@@ -24,7 +24,7 @@ class MainGameView:
         self._screen_ = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), 0, 32)
         self._maze_screen_ = None
         self._player_view_ = None
-        self._enemy_view_ = []
+        self._enemies_view_ = None
         self._bullets_ = None
 
     # To do rewrite into using pygame sprite group
@@ -37,6 +37,7 @@ class MainGameView:
         world_pos = convert_maze_to_world_pos(player.position[0], player.position[1])
         self._player_view_.add_to_parent(self._screen_, location=world_pos)
         self._bullets_.draw(self._screen_)
+        self._enemies_view_.draw(self._screen_)
         self._screen_display_.update()
 
     def init_maze(self, maze):
@@ -47,15 +48,11 @@ class MainGameView:
         self._maze_screen_ = MazeView(maze, maze_screen_height, maze_screen_width)
         self._maze_screen_.add_to_parent(self._screen_, (self.maze_screen_offset_y, self.maze_screen_offset_x))
 
-    def init_player(self, player, enemies=[]):
+    def init_player(self, player, enemies_group):
         self._player_view_ = PlayerView(player)
         world_pos = convert_maze_to_world_pos(player.position[0], player.position[1])
         self._player_view_.add_to_parent(self._screen_, location=world_pos)
-        
-        for p in enemies:
-            enemy_view = PlayerView(p)
-            enemy_view.add_to_parent(self._screen_)
-            self._enemy_view_.append(enemy_view)
+        self._enemies_view_ = enemies_group
 
     def init_bullets(self, bullets_group):
         self._bullets_ = bullets_group
