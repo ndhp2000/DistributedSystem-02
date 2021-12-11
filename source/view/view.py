@@ -3,6 +3,9 @@ import pygame
 from source.config import *
 from source.view.maze import MazeView
 from source.view.player import PlayerView
+from source.config import *
+from source.view.utils import convert_maze_to_world_pos
+
 
 class MainGameView:
     _MAZE_SCREEN_RATIO_ = (2 / 3, 1)
@@ -22,11 +25,18 @@ class MainGameView:
         self._maze_screen_ = None
         self._player_view_ = None
         self._enemy_view_ = []
+        self._bullets_ = None
+
+    # To do rewrite into using pygame sprite group
+    # def __init__(self, main_game_logic):
+    #     pygame.init()
+    #     self.
 
     def update(self, player):
         self._maze_screen_.add_to_parent(self._screen_, (self.maze_screen_offset_y, self.maze_screen_offset_x))
-        world_pos = self.convert_maze_to_world_pos(player.position[0], player.position[1])
+        world_pos = convert_maze_to_world_pos(player.position[0], player.position[1])
         self._player_view_.add_to_parent(self._screen_, location=world_pos)
+        self._bullets_.draw(self._screen_)
         self._screen_display_.update()
 
     def init_maze(self, maze):
@@ -39,7 +49,7 @@ class MainGameView:
 
     def init_player(self, player, enemies=[]):
         self._player_view_ = PlayerView(player)
-        world_pos = self.convert_maze_to_world_pos(player.position[0], player.position[1])
+        world_pos = convert_maze_to_world_pos(player.position[0], player.position[1])
         self._player_view_.add_to_parent(self._screen_, location=world_pos)
         
         for p in enemies:
@@ -47,17 +57,20 @@ class MainGameView:
             enemy_view.add_to_parent(self._screen_)
             self._enemy_view_.append(enemy_view)
 
-    @staticmethod
-    def convert_maze_to_world_pos(maze_x, maze_y):
-        maze_screen_height = int(WIN_HEIGHT * MainGameView._MAZE_SCREEN_RATIO_[0])
-        maze_screen_width = int(WIN_WIDTH * MainGameView._MAZE_SCREEN_RATIO_[1])
+    def init_bullets(self, bullets_group):
+        self._bullets_ = bullets_group
 
-        cell_height = int( maze_screen_height / MAP_HEIGHT)
-        cell_width = int( maze_screen_width / MAP_WIDTH )
-        world_x = (maze_x * cell_height + cell_height / 2)
-        world_y = (maze_y * cell_width + cell_width / 2)
-
-        return (world_x, world_y)
+    # @staticmethod
+    # def convert_maze_to_world_pos(maze_x, maze_y):
+    #     maze_screen_height = int(WIN_HEIGHT * MainGameView._MAZE_SCREEN_RATIO_[0])
+    #     maze_screen_width = int(WIN_WIDTH * MainGameView._MAZE_SCREEN_RATIO_[1])
+    #
+    #     cell_height = int( maze_screen_height / MAP_HEIGHT)
+    #     cell_width = int( maze_screen_width / MAP_WIDTH )
+    #     world_x = (maze_x * cell_height + cell_height / 2)
+    #     world_y = (maze_y * cell_width + cell_width / 2)
+    #
+    #     return world_x, world_y
 
     def init_score_board(self):
         pass
