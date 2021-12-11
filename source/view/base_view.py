@@ -11,5 +11,9 @@ class BaseView:
     def _add_child(self, child: pygame.Surface, location):
         self._screen_.blit(child, child.get_rect(center=location))
 
-    def add_to_parent(self, parent: pygame.Surface, location):
+    def _get_world_position(self):
+        return 0
+
+    def add_to_parent(self, parent: pygame.Surface):
+        location = self.get_world_position()
         parent.blit(self._screen_, location)

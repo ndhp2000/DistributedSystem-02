@@ -6,7 +6,7 @@ from source.view.notification import NotificationView
 from source.view.player import PlayerView
 from source.view.scoreboard import ScoreboardView
 from source.view.utils import convert_maze_to_world_pos
-from source.utils.group import Group
+from source.utils.group import Group, GroupView
 
 
 class MainGameView:
@@ -26,18 +26,17 @@ class MainGameView:
         self._screen_ = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), 0, 32)
         self._maze_screen_ = None
         self._scoreboard_screen_ = None
-        self._player_view_ = None
+        self._player_view_ = PlayerView()
         self._notification_screen_ = None
-        self._enemies_view_ = Group()
-        self._player_bullets_view_ = Group()
+        self._enemies_view_ = GroupView()
+        self._player_bullets_view_ = GroupView()
 
     def update(self, player=None):
         maze_screen_offset_y = self._MAZE_SCREEN_OFFSET_[0] * self._screen_.get_height()
         maze_screen_offset_x = self._MAZE_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
 
-        world_pos = convert_maze_to_world_pos(player.position[0], player.position[1])
-        self._player_view_.add_to_parent(self._screen_, location=world_pos)
+        self._player_view_.add_to_parent(self._screen_)
         self._bullets_.draw(self._screen_)
         self._enemies_view_.draw(self._screen_)
         self._screen_display_.update()

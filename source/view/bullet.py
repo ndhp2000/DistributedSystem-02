@@ -1,25 +1,25 @@
 from source.model.bullet import Bullet
 import pygame
-
+from source.view.base_view import BaseView
 from source.view.utils import convert_maze_to_world_pos
 
 
-class BulletView:
+class BulletView(BaseView):
     def __init__(self, bullet):
-        self.bullet = bullet
+        self._bullet = bullet
+        r = self._bullet.radius
 
-        r = self.bullet.radius
-        self._view_ = pygame.Surface((r * 2, r * 2))
-        self._view_.fill(pygame.Color("black"))
-        pygame.draw.circle(self._view_, pygame.Color("orange"),
-                            (int(self._view_.get_width() /2),
-                            int(self._view_.get_height() /2)),
+        super().__init__(r * 2, r * 2)
+
+        self._screen_.fill(pygame.Color("black"))
+        pygame.draw.circle(self._screen_, pygame.Color("orange"),
+                            (int(self._screen_.get_width() /2),
+                            int(self._screen_.get_height() /2)),
                             r)
 
-    def get_world_position(self):
-        world_pos = convert_maze_to_world_pos(self.bullet.position[0], self.bullet.position[1])
-        return world_pos
- 
-    def add_to_parent(self, parent: pygame.Surface, location):
-        parent.blit(self._view_, location)
+    def _get_world_position(self):
+        position = self._bullet.get_position()
+        world_position = convert_maze_to_world_pos(position[0], position[1])
+        return world_position
+
 
