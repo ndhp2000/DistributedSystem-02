@@ -138,15 +138,3 @@ class Player:
 
     def hit(self, damage):
         print(self.name, 'hit')
-
-
-# class Player(Entity):
-#     def __init__(self, pos, bullets_group, adj_matrix, id=0):
-#         super().__init__(pos, bullets_group, adj_matrix, None, id)
-#         self.name = 'Player'
-#
-#
-# class Enemy(Entity):
-#     def __init__(self, pos, bullets_group, enemies_group, adj_matrix, id=0):
-#         super().__init__(pos, bullets_group, adj_matrix, enemies_group, id)
-#         self.name = 'Enemy'
