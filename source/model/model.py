@@ -51,7 +51,7 @@ class MainGameLogic:
         if self.flag:
             enemy = Enemy(np.array([10, 5]), self._enemy_bullets_, self._enemies_, self._maze_._adj_matrix_)
 
-
+        self.check_collision()
 
     def check_collision(self):
         collided_bullet = pygame.sprite.spritecollide(self._player_, self._enemy_bullets_, True)
