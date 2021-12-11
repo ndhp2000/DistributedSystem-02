@@ -1,6 +1,6 @@
 from source.model.maze import Maze
 from collections import deque
-from source.model.player import Player, Enemy
+from source.model.player import Player
 from source.config import *
 import numpy as np
 import pygame
@@ -18,10 +18,11 @@ class MainGameLogic:
 
     def init_maze(self):
         self._maze_ = Maze()
-    
+
     def init_player(self):
         pos = np.array([0, 0])
-        self._player_ = Player(pos.astype('float64'), self._player_bullets_, self._maze_._adj_matrix_)
+        player_id = 0
+        self._player_ = Player(pos.astype('float64'), self._maze_, player_id)
 
     def get_maze(self):
         return self._maze_
@@ -39,17 +40,17 @@ class MainGameLogic:
         pass
 
     def update(self, event=None, dt=0):
-        player_id = 0 # FAKE
+        player_id = 0  # FAKE
         self._player_.update(event, dt)
-        self._enemies_.update(None, dt)
-
-        self._player_bullets_.update(dt)
-        self._enemies_bullets_.update(dt)
-
-        if self.flag:
-            enemy = Enemy(np.array([10, 5]), self._enemies_bullets_, self._enemies_, self._maze_)
-
-        self.check_collision()
+        # self._enemies_.update(None, dt)
+        #
+        # self._player_bullets_.update(dt)
+        # self._enemies_bullets_.update(dt)
+        #
+        # if self.flag:
+        #     enemy = Enemy(np.array([10, 5]), self._enemies_bullets_, self._enemies_, self._maze_)
+        #
+        # self.check_collision()
 
     def check_collision(self):
         collided_bullet = pygame.sprite.spritecollide(self._player_, self._enemies_bullets_, True)

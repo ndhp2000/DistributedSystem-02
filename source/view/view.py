@@ -35,11 +35,10 @@ class MainGameView:
         maze_screen_offset_x = self._MAZE_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
 
-        world_pos = convert_maze_to_world_pos(player.position[0], player.position[1])
+        world_pos = convert_maze_to_world_pos(player.get_position()[0], player.get_position()[1])
         self._player_view_.add_to_parent(self._screen_, location=world_pos)
-        self._bullets_.draw(self._screen_)
-        self._enemies_view_.draw(self._screen_)
-        self._screen_display_.update()
+        # self._bullets_.draw(self._screen_)
+        # self._enemies_view_.draw(self._screen_)
 
         # Update Notification View
         notification_screen_offset_y = self._NOTIFICATION_SCREEN_OFFSET_[0] * self._screen_.get_height()
@@ -52,6 +51,8 @@ class MainGameView:
         scoreboard_screen_offset_x = self._SCOREBOARD_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._scoreboard_screen_.add_to_parent(self._screen_, (scoreboard_screen_offset_x, scoreboard_screen_offset_y))
 
+        self._screen_display_.update()
+
     def init_maze(self, maze):
         maze_screen_height = int(self._screen_.get_height() * self._MAZE_SCREEN_RATIO_[0])
         maze_screen_width = int(self._screen_.get_width() * self._MAZE_SCREEN_RATIO_[1])
@@ -60,11 +61,11 @@ class MainGameView:
         self._maze_screen_ = MazeView(maze, maze_screen_height, maze_screen_width)
         self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
 
-    def init_player(self, player, enemies_group):
+    def init_player(self, player, enemies_group=None):
         self._player_view_ = PlayerView(player)
-        world_pos = convert_maze_to_world_pos(player.position[0], player.position[1])
+        world_pos = convert_maze_to_world_pos(player.get_position()[0], player.get_position()[1])
         self._player_view_.add_to_parent(self._screen_, location=world_pos)
-        self._enemies_view_ = enemies_group
+        # self._enemies_view_ = enemies_group
 
     def init_bullets(self, bullets_group):
         self._bullets_ = bullets_group

@@ -4,6 +4,7 @@ from io import StringIO
 import numpy as np
 from ..config import *
 
+
 class DisjointSet:
     def __init__(self):
         self._p_ = {}
@@ -30,6 +31,7 @@ class DisjointSet:
 
     def size(self):
         return self._n_components_
+
 
 class Maze:
     DELTA = ((-1, 0), (1, 0), (0, -1), (0, 1))
@@ -122,4 +124,3 @@ class Maze:
                     result.write(' *')
             result.write('\n')
         return result.getvalue()
-
