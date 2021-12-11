@@ -87,17 +87,6 @@ class Maze:
     def is_connected_to_direction(self, p, direction):
         return self._adj_matrix_[p[0], p[1], direction]
 
-    @staticmethod
-    def convert_player_direction_2_maze(direction):
-        if direction == UP:
-            return Maze.DIRECTION_UP
-        elif direction == DOWN:
-            return Maze.DIRECTION_DOWN
-        elif direction == RIGHT:
-            return Maze.DIRECTION_RIGHT
-        elif direction == LEFT:
-            return Maze.DIRECTION_LEFT
-
     def __str__(self):
         result = StringIO()
         result.write("Size : {} * {}\n".format(self._height_, self._width_))

@@ -1,137 +1,109 @@
 import pygame
-from pygame.locals import *
-from source.model.bullet import Bullet
-import numpy as np
+
 from source.config import *
+from source.model.bullet import Bullet
 from source.model.maze import Maze
+from source.model.utils import convert_player_direction_to_maze_direction
 from source.view.utils import convert_maze_to_world_pos
 
 
-class Entity(pygame.sprite.Sprite):
-    def __init__(self, pos, bullets_group, adj_matrix, group=None, id=0):
-        if group is None:
-            pygame.sprite.Sprite.__init__(self)
-        else:
-            pygame.sprite.Sprite.__init__(self, group)
-        self._id = id
-        self._hp = 10
-        self._speed = 1
-        self._action = STOP
-        self._bullets = []
-        self._target = pos.copy()
-        self._previous_target = None
-        self._maze_map = adj_matrix
-        self._bullets_group = bullets_group
-        self.clock = pygame.time.Clock()
+class Player:
+    def __init__(self, pos, maze: Maze, player_id=0):
+        self._maze_ = maze
+        self._id = player_id
+        self._hp = PLAYER_HP
+        self._speed = PLAYER_MOVING_SPEED
+        self._radius = PLAYER_RADIUS
+        self._position = pos.copy()  # MAZE
 
-        self.future_change_direction = STOP
-        self.direction = STOP
-        self.position = pos
-        self.radius = 15
+        self._previous_anchor = pos.copy()
+        self._next_anchor = pos.copy()
 
-        self.image = pygame.Surface((self.radius * 2, self.radius * 2))
-        self.image.fill(pygame.Color("black"))
-        pygame.draw.circle(self.image, pygame.Color("white"),
-                           (int(self.image.get_width() / 2),
-                            int(self.image.get_height() / 2)),
-                           self.radius)
-        self.rect = self.image.get_rect(center=self.position)
+        self._current_direction = STOP
+        self._next_direction = STOP
+        # self._bullets_group = bullets_group
+
+        # self.image = pygame.Surface((self.radius * 2, self.radius * 2))
+        # self.image.fill(pygame.Color("black"))
+        # pygame.draw.circle(self.image, pygame.Color("white"),
+        #                    (int(self.image.get_width() / 2),
+        #                     int(self.image.get_height() / 2)),
+        #                    self.radius)
+        # self.rect = self.image.get_rect(center=self.position)
+
+    def _set_next_direction(self, input_direction):
+        self._next_direction = input_direction
+
+        # if self.current_direction == STOP and self.future_change_direction == STOP:
+        #     return
+        #
+        # if self.current_direction == STOP and self.future_change_direction != STOP:
+        #     if self.is_valid_direction(self.future_change_direction):
+        #         self.current_direction = self.future_change_direction
+        #         self._previous_anchor = self._target
+        #     else:
+        #         self.future_change_direction = STOP
+        #         return
+
+    def _meet_next_anchor(self):
+        if self._next_anchor and self._previous_anchor:
+            distance_between_anchors = np.sum(np.abs(self._next_anchor - self._previous_anchor))
+            distance_to_position = np.sum(np.abs(self._position - self._previous_anchor))
+            return distance_to_position >= distance_between_anchors
+        return False
 
     def set_position(self, pos):
-        self.position = pos.copy()
+        self._position = pos.copy()
 
     def update(self, event, dt):
         if event in PLAYER_MOVEMENT:
-            self.move(event, dt)
-            return
-
-        if event in PLAYER_SHOOT:
+            self._set_next_direction(event)
+        elif event in PLAYER_SHOOT:
             self.shoot()
+        self._move(dt)
 
-        self.move(None, dt)
+    def _move(self, dt):
 
-    def move(self, direction, dt):
-        if direction is not None:
-            self.future_change_direction = direction
+        self._position += DIRECTIONS[self._current_direction] * self._speed * dt
 
-        if self.direction == STOP and self.future_change_direction == STOP:
-            return
+        if self._next_direction == -self._current_direction:
+            self._reverse_direction()
+            self._next_direction = None
 
-        if self.direction == STOP and self.future_change_direction != STOP:
-            if self.is_valid_direction(self.future_change_direction):
-                self.direction = self.future_change_direction
-                self._previous_target = self._target
+        if self._meet_next_anchor():
+            if self._next_direction:
+                self._position = self._next_anchor.copy()  # TODO Fix position
+                if self._is_valid_direction(self._next_direction):
+                    # Check new input direction
+                    self._previous_anchor = self._next_anchor
+                    self._next_anchor = self._get_next_anchor(self._previous_anchor, self._next_direction)
+                    self.current_direction = self._next_direction
+                elif self._is_valid_direction(self._current_direction):
+                    # If new input direction is not valid use older direction:
+                    self._previous_anchor = self._next_anchor
+                    self._next_anchor = self._get_next_anchor(self._previous_anchor, self.current_direction)
+                else:
+                    # If older direction lead to dead-end => stop
+                    self.current_direction = STOP
+                    self._next_direction = STOP
+                self._next_direction = None
             else:
-                self.future_change_direction = STOP
-                return
+                pass
 
-        self.position += DIRECTIONS[self.direction] * self._speed * dt
+    def _reverse_direction(self):
+        self._current_direction *= -1
+        self._previous_anchor, self._next_anchor = self._next_anchor, self._previous_anchor
 
-        if self.meet_target():
-            # check new input direction
-            if self.is_valid_direction(self.future_change_direction):
-                self._previous_target = self._target
-                self._target = self.get_next_target(self._previous_target, self.future_change_direction)
-                self.direction = self.future_change_direction
+    def _is_valid_direction(self, player_direction):
+        maze_direction = convert_player_direction_to_maze_direction(player_direction)
+        return self._maze_.is_connected_to_direction((int(self._position[1]), int(self._position[0])), maze_direction)
 
-            # if new input direction is not valid use older direction:
-            elif self.is_valid_direction(self.direction):
-                self._previous_target = self._target
-                self._target = self.get_next_target(self._previous_target, self.direction)
-
-            # if older direction lead to deadend => stop
-            else:
-                self.direction = STOP
-                self.future_change_direction = STOP
-
-        else:
-            if self.future_change_direction == -self.direction:
-                self.reverse_direction()
-
-        world_position = convert_maze_to_world_pos(self.position[0], self.position[1])
-        self.rect = self.image.get_rect(center=world_position)
-
-    def reverse_direction(self):
-        self.direction *= -1
-        temp = self._previous_target
-        self._previous_target = self._target
-        self._target = temp
-
-    def is_valid_direction(self, player_direction):
-        maze_direction = None
-        if player_direction == UP:
-            maze_direction = Maze.DIRECTION_UP
-        if player_direction == DOWN:
-            maze_direction = Maze.DIRECTION_DOWN
-        if player_direction == LEFT:
-            maze_direction = Maze.DIRECTION_LEFT
-        if player_direction == RIGHT:
-            maze_direction = Maze.DIRECTION_RIGHT
-        if player_direction == STOP:
-            return True
-
-        if self._maze_map[int(self.position[1]), int(self.position[0]), maze_direction] == 0:
-            return False
-        return True
-
-    def meet_target(self):
-        if self._previous_target is None:
-            return False
-
-        if (self._target != self._previous_target).any():
-            distance_target = np.sum(np.square(self._previous_target - self._target))
-            self_previous = np.sum(np.square(self._previous_target - self.position))
-
-            return self_previous >= distance_target
-        else:
-            return True
-
-    def get_next_target(self, pos, player_direction):
+    def _get_next_anchor(self, pos, player_direction):
         if player_direction == STOP:
             return np.array([pos[0], pos[1]])
 
-        direction = Maze.convert_player_direction_2_maze(player_direction)
-        if self._maze_map[int(pos[1]), int(pos[0]), direction] == 1:
+        direction = convert_player_direction_to_maze_direction(player_direction)
+        if self._maze_.is_connected_to_direction((int(pos[1]), int(pos[0])), direction):
             new_pos = (-1, -1)
             if direction == Maze.DIRECTION_UP:
                 new_pos = (pos[0], pos[1] - 1)
@@ -145,14 +117,15 @@ class Entity(pygame.sprite.Sprite):
         else:
             return np.array([pos[0], pos[1]])
 
+    ## OK
     def get_bullet_target(self):
         cell_pos = np.array([int(self.position[0]), int(self.position[1])])
 
-        if self.direction == STOP:
+        if self.current_direction == STOP:
             return None
-        direction = Maze.convert_player_direction_2_maze(self.direction)
+        direction = Maze.convert_player_direction_2_maze(self.current_direction)
         while self._maze_map[cell_pos[1], cell_pos[0], direction] == 1:
-            cell_pos += DIRECTIONS[self.direction]
+            cell_pos += DIRECTIONS[self.current_direction]
         return cell_pos
 
     def shoot(self):
@@ -161,17 +134,19 @@ class Entity(pygame.sprite.Sprite):
         if target is None:
             return
 
-        bullet = Bullet(self._bullets_group, 0, self.position, target, self.direction)
+        bullet = Bullet(self._bullets_group, 0, self.position, target, self.current_direction)
 
     def hit(self, damage):
         print(self.name, 'hit')
 
-class Player(Entity):
-    def __init__(self, pos, bullets_group, adj_matrix, id=0):
-        super().__init__(pos, bullets_group, adj_matrix, None, id)
-        self.name = 'Player'
 
-class Enemy(Entity):
-    def __init__(self, pos, bullets_group, enemies_group, adj_matrix, id=0):
-        super().__init__(pos, bullets_group, adj_matrix, enemies_group, id)
-        self.name = 'Enemy'
+# class Player(Entity):
+#     def __init__(self, pos, bullets_group, adj_matrix, id=0):
+#         super().__init__(pos, bullets_group, adj_matrix, None, id)
+#         self.name = 'Player'
+#
+#
+# class Enemy(Entity):
+#     def __init__(self, pos, bullets_group, enemies_group, adj_matrix, id=0):
+#         super().__init__(pos, bullets_group, adj_matrix, enemies_group, id)
+#         self.name = 'Enemy'

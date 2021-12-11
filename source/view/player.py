@@ -1,10 +1,9 @@
 import pygame
 from pygame.locals import *
 from source.config import *
-
 from source.model.player import Player
 
-class PlayerView:
+class PlayerView():
     def __init__(self, player):
         self.player = player
 

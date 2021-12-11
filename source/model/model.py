@@ -5,14 +5,15 @@ from source.config import *
 import numpy as np
 import pygame
 
+
 class MainGameLogic:
     def __init__(self):
         self._maze_ = None
         self._events_ = deque()
-        self._enemies_ = pygame.sprite.Group()
-        self._player_bullets_ = pygame.sprite.Group()
         self._player_ = None
-        self._enemy_bullets_ = pygame.sprite.Group()
+        self._player_bullets_ = pygame.sprite.Group()
+        self._enemies_ = pygame.sprite.Group()
+        self._enemies_bullets_ = pygame.sprite.Group()
         self.flag = True
 
     def init_maze(self):
@@ -37,24 +38,21 @@ class MainGameLogic:
     def add_player(self):
         pass
 
-    def add_event(self, player_id, event_id):
-        self._events_.append((player_id, event_id))
-
     def update(self, event=None, dt=0):
-        player_id = 0
+        player_id = 0 # FAKE
         self._player_.update(event, dt)
         self._enemies_.update(None, dt)
 
         self._player_bullets_.update(dt)
-        self._enemy_bullets_.update(dt)
+        self._enemies_bullets_.update(dt)
 
         if self.flag:
-            enemy = Enemy(np.array([10, 5]), self._enemy_bullets_, self._enemies_, self._maze_._adj_matrix_)
+            enemy = Enemy(np.array([10, 5]), self._enemies_bullets_, self._enemies_, self._maze_)
 
         self.check_collision()
 
     def check_collision(self):
-        collided_bullet = pygame.sprite.spritecollide(self._player_, self._enemy_bullets_, True)
+        collided_bullet = pygame.sprite.spritecollide(self._player_, self._enemies_bullets_, True)
         enemies_hit = pygame.sprite.groupcollide(self._enemies_, self._player_bullets_, False, True)
 
         for enemy in enemies_hit:
