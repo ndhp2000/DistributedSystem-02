@@ -2,10 +2,11 @@ import pygame
 from source.config import *
 from source.model.maze import Maze
 from source.view.utils import convert_maze_to_world_pos
+from source.utils.group import Group
 
-class Bullet(pygame.sprite.Sprite):
+class Bullet:
     def __init__(self, bullets_group, id, position, target, direction):
-        pygame.sprite.Sprite.__init__(self, bullets_group)
+        self._group = {}
         self.position = position.copy()
         self.speed = 5
         self.id = id
@@ -15,19 +16,14 @@ class Bullet(pygame.sprite.Sprite):
         self.target = target
         self.player_id = 0
 
-        self.image = pygame.Surface((self.radius * 2, self.radius * 2))
-        self.image.fill(pygame.Color("black"))
-        pygame.draw.circle(self.image, pygame.Color("orange"),
-                            (int(self.image.get_width() /2),
-                            int(self.image.get_height() /2)),
-                            self.radius)
-        self.rect = self.image.get_rect(center=self.position)
+        bullets_group.add(self)
+        self._group[bullets_group] = 0
 
     def move(self, dt):
         self.position += DIRECTIONS[self.direction] * self.speed * dt
 
         if self.meet_target(dt):
-            self.kill()
+            self.remove()
         else:
             world_position = convert_maze_to_world_pos(self.position[0], self.position[1])
             self.rect = self.image.get_rect(center=world_position)
@@ -47,6 +43,3 @@ class Bullet(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.move(dt)
-
-
-

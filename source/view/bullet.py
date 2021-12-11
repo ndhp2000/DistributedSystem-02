@@ -16,4 +16,3 @@ class BulletView:
  
     def add_to_parent(self, parent: pygame.Surface, location):
         parent.blit(self._view_, location)
-

@@ -4,6 +4,7 @@ from source.model.player import Player, Enemy
 from source.config import *
 import numpy as np
 import pygame
+from source.utils.group import Group
 
 
 class MainGameLogic:
@@ -11,9 +12,9 @@ class MainGameLogic:
         self._maze_ = None
         self._events_ = deque()
         self._player_ = None
-        self._player_bullets_ = pygame.sprite.Group()
-        self._enemies_ = pygame.sprite.Group()
-        self._enemies_bullets_ = pygame.sprite.Group()
+        self._player_bullets_ = Group()
+        self._enemies_ = Group()
+        self._enemies_bullets_ = Group()
         self.flag = True
 
     def init_maze(self):

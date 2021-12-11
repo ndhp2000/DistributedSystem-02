@@ -6,6 +6,7 @@ from source.view.notification import NotificationView
 from source.view.player import PlayerView
 from source.view.scoreboard import ScoreboardView
 from source.view.utils import convert_maze_to_world_pos
+from source.utils.group import Group
 
 
 class MainGameView:
@@ -27,8 +28,8 @@ class MainGameView:
         self._scoreboard_screen_ = None
         self._player_view_ = None
         self._notification_screen_ = None
-        self._enemies_view_ = None
-        self._bullets_ = None
+        self._enemies_view_ = Group()
+        self._player_bullets_view_ = Group()
 
     def update(self, player=None):
         maze_screen_offset_y = self._MAZE_SCREEN_OFFSET_[0] * self._screen_.get_height()
