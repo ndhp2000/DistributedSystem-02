@@ -3,10 +3,12 @@ import numpy as np
 LOGGER = [("game-debug", "./logs"), ("game-view", "./logs"), ("game-controller", "./logs"),
           ("game-model", "./logs"),
           ("game-socket", "./logs")]
-MAP_WIDTH = 16
-MAP_HEIGHT = 8
+MAP_WIDTH = 32
+MAP_HEIGHT = 16
 WIN_WIDTH = 1024
 WIN_HEIGHT = 768
+NAME_TAG_FONT_SIZE = 32
+CONSOLE_FONT_SIZE = 18
 
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 12345

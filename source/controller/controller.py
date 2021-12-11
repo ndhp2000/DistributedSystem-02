@@ -15,12 +15,15 @@ class Controller:
         # Init Logic
         self._logic_ = MainGameLogic()
         self._logic_.init_maze()
-        self._logic_.init_player()
+        # self._logic_.init_player()
 
         # Init View
         self._view_ = MainGameView()
+        self._view_.init_scoreboard()
         self._view_.init_maze(self._logic_.get_maze())
-        self._view_.init_player(self._logic_.get_player())
+        self._view_.init_notification()
+
+        # self._view_.init_player(self._logic_.get_player())
 
         # Init Network
         # self._game_network_ = GameNetwork()
@@ -56,20 +59,20 @@ class Controller:
                 if event.type == QUIT:
                     pygame.quit()
                     exit()
-                    
+
             # Input listener
             # self.input_listener()
             # Update Logic
-            key_pressed = self.getValidKey()
-            self._logic_.update(key_pressed)
+            # key_pressed = self.getValidKey()
+            # self._logic_.update(key_pressed)
             # Update View
-            self._view_.update(self._logic_.get_player())
+            self._view_.print_log("Ni hao " + str(time.time()))
 
-            time.sleep(0.5)
-            self._game_network_.send({'type': '_EXAMPLE_BROADCAST_', 'instance_id': self._instance_id_})
-            json = {
-                'type': PLAYER_MOVEMENT,
-                'instance_id': 123
-            }
+            self._view_.update()
 
-
+            # time.sleep(0.5)
+            # self._game_network_.send({'type': '_EXAMPLE_BROADCAST_', 'instance_id': self._instance_id_})
+            # json = {
+            #     'type': PLAYER_MOVEMENT,
+            #     'instance_id': 123
+            # }
