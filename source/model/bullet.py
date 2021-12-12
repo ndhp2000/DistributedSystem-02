@@ -36,10 +36,10 @@ class Bullet(Entity):
             self._remove()
 
     def _meet_target(self, dt):
-        distance = np.linalg.norm(self._position - self._target)
-        if distance < self._speed * dt * 0.55: # TODO: check ds of bullet
-            return True
-        return False
+        distance_from_start = np.linalg.norm(self._position - self._initial_position)
+        start_to_target = np.linalg.norm(self._target - self._initial_position)
+
+        return start_to_target <= distance_from_start
 
     def update(self, dt):
         self._move(dt)

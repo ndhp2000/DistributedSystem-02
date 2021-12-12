@@ -108,15 +108,15 @@ class Player(Entity):
         self._move(dt)
 
     def get_bullet_target(self):
-        cell_pos = np.array([int(self._position[0]), int(self._position[1])])
+        target_cell_pos = np.array([int(self._position[0]), int(self._position[1])])
 
-        direction = convert_player_direction_to_maze_direction(self._current_direction)
-        while self._maze_.is_connected_to_direction((cell_pos[1], cell_pos[0]), direction):
-            cell_pos += DIRECTIONS[self._current_direction]
+        maze_direction = convert_player_direction_to_maze_direction(self._current_direction)
+        while self._maze_.is_connected_to_direction((target_cell_pos[1], target_cell_pos[0]), maze_direction):
+            target_cell_pos += DIRECTIONS[self._current_direction]
 
-        if np.array_equal(cell_pos, self._position):
+        if np.array_equal(target_cell_pos, self._position):
             return None
-        return cell_pos
+        return target_cell_pos
 
     def shoot(self, bullets_group):
 
