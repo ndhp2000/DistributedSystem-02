@@ -1,10 +1,10 @@
-from source.model.maze import Maze
 from collections import deque
-from source.model.player import Player
-from source.config import *
+
 import numpy as np
-import pygame
-from source.utils.group import Group
+
+from source.model.enity_group import Group
+from source.model.maze import Maze
+from source.model.player import Player
 
 
 class MainGameLogic:

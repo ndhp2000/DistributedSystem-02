@@ -1,7 +1,7 @@
 import random
 import time
 from io import StringIO
-import numpy as np
+
 from ..config import *
 
 
@@ -41,7 +41,7 @@ class Maze:
     DIRECTION_RIGHT = 3
     _REVERSE_DIRECTION_ = {DIRECTION_LEFT: DIRECTION_RIGHT, DIRECTION_RIGHT: DIRECTION_LEFT,
                            DIRECTION_UP: DIRECTION_DOWN, DIRECTION_DOWN: DIRECTION_UP}
-    _CYCLE_RATIO_ = 0.8
+    _CYCLE_RATIO_ = 1
 
     def __init__(self, width=MAP_WIDTH, height=MAP_HEIGHT):
         self._width_ = width
