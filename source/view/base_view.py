@@ -11,10 +11,14 @@ class BaseView:
     def _add_child(self, child: pygame.Surface, location):
         self._screen_.blit(child, child.get_rect(center=location))
 
-    def _get_world_position(self):
-        return 0
+    def get_world_position(self):
+        assert False
 
-    def add_to_parent(self, parent: pygame.Surface, location=None):
+    def add_to_parent(self, parent: pygame.Surface, location=None, is_centered=None):
         if location is None:
-            location = self._get_world_position()
-        parent.blit(self._screen_, location)
+            location = self.get_world_position()
+
+        if is_centered is None:
+            parent.blit(self._screen_, location)
+        else:
+            parent.blit(self._screen_, self._screen_.get_rect(center=location))

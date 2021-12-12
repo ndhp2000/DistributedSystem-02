@@ -9,6 +9,8 @@ from source.view.utils import convert_maze_to_world_pos
 class PlayerView(BaseView):
     def __init__(self, player):
         self._player = player
+        self.name = "Player"
+
         r = self._player.get_radius()
 
         super().__init__(r * 2, r * 2)
@@ -18,9 +20,8 @@ class PlayerView(BaseView):
                             int(self._screen_.get_width() /2)),
                             r)
 
-    def _get_world_position(self):
+    def get_world_position(self):
         position = self._player.get_position()
         world_position = convert_maze_to_world_pos(position[0], position[1])
         return world_position
-
 

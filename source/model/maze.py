@@ -4,6 +4,7 @@ from io import StringIO
 import numpy as np
 from ..config import *
 
+
 class DisjointSet:
     def __init__(self):
         self._p_ = {}
@@ -31,6 +32,7 @@ class DisjointSet:
     def size(self):
         return self._n_components_
 
+
 class Maze:
     DELTA = ((-1, 0), (1, 0), (0, -1), (0, 1))
     DIRECTION_UP = 0
@@ -39,7 +41,7 @@ class Maze:
     DIRECTION_RIGHT = 3
     _REVERSE_DIRECTION_ = {DIRECTION_LEFT: DIRECTION_RIGHT, DIRECTION_RIGHT: DIRECTION_LEFT,
                            DIRECTION_UP: DIRECTION_DOWN, DIRECTION_DOWN: DIRECTION_UP}
-    _CYCLE_RATIO_ = 0.1
+    _CYCLE_RATIO_ = 0.8
 
     def __init__(self, width=MAP_WIDTH, height=MAP_HEIGHT):
         self._width_ = width
@@ -122,4 +124,3 @@ class Maze:
                     result.write(' *')
             result.write('\n')
         return result.getvalue()
-

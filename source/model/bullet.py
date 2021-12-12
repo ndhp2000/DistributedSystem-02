@@ -9,9 +9,9 @@ class Bullet:
     def __init__(self, bullets_group, bullet_id, position, target, direction):
         self._group = {}
         self._position = position.copy()
-        self._speed = 5
+        self._speed = BULLET_MOVING_SPEED
         self._id = bullet_id
-        self._radius = 5
+        self._radius = BULLET_RADIUS
         self._direction = direction
         self._is_disable = False
         self._target = target
@@ -20,20 +20,31 @@ class Bullet:
         bullets_group.add(self)
         self._group[bullets_group] = 0
 
-    def move(self, dt):
-        self.position += DIRECTIONS[self.direction] * self.speed * dt
+    def _remove(self):
+        for group in self._group:
+            group.remove(self)
+
+    def _move(self, dt):
+        # print("BULLET MOVE")
+        # print(self._position)
+        # print(self._direction)
+        # print(self._speed * dt)
+        self._position += DIRECTIONS[self._direction] * self._speed * dt
 
         if self._meet_target(dt):
-            self.remove()
+            self._remove()
 
     def _meet_target(self, dt):
-        distance = np.linalg.norm(self.position - self.target)
-        if distance < self.speed * dt * 0.55:
+        distance = np.linalg.norm(self._position - self._target)
+        if distance < self._speed * dt * 0.55: # TODO: check ds of bullet
             return True
         return False
 
     def update(self, dt):
-        self.move(dt)
+        self._move(dt)
 
     def get_radius(self):
         return self._radius
+
+    def get_position(self):
+        return self._position.copy()

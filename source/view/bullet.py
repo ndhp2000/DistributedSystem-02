@@ -5,12 +5,11 @@ from source.view.utils import convert_maze_to_world_pos
 
 
 class BulletView(BaseView):
-    def __init__(self, bullet, view_group):
+    def __init__(self, bullet):
         self._bullet = bullet
         self._group = {}
+        self.name = "Bullet"
 
-        view_group.add(self)
-        self.add(view_group)
         r = self._bullet.get_radius()
 
         super().__init__(r * 2, r * 2)
@@ -21,10 +20,7 @@ class BulletView(BaseView):
                             int(self._screen_.get_height() /2)),
                             r)
 
-    def _add(self, view_group):
-        self._group[view_group] = 0
-
-    def _get_world_position(self):
+    def get_world_position(self):
         position = self._bullet.get_position()
         world_position = convert_maze_to_world_pos(position[0], position[1])
         return world_position

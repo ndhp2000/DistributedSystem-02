@@ -13,7 +13,8 @@ class Controller:
         # Init Logic
         self._logic_ = MainGameLogic()
         self._logic_.init_maze()
-        self._logic_.init_player()
+        self._logic_.init_players()
+        self._logic_.init_bullets()
         self.clock = pygame.time.Clock()
 
         # Init View
@@ -21,8 +22,9 @@ class Controller:
         self._view_.init_maze(self._logic_.get_maze())
         self._view_.init_scoreboard()
         self._view_.init_notification()
-        self._view_.init_player(self._logic_.get_player(), self._logic_.get_enemies_group())
-        self._view_.init_bullets(self._logic_.get_bullets(), self._logic_.get_enemies_bullets_group())
+        self._view_.init_players(self._logic_.get_players())
+        self._view_.init_bullets(self._logic_.get_bullets())
+
 
         # Init Network
         # self._game_network_ = GameNetwork()
@@ -44,7 +46,7 @@ class Controller:
     def loop(self):
         while True:
             # Event Handler
-            dt = self.clock.tick(30) / 1000
+            dt = self.clock.tick(60) / 1000
 
             input_event = None
             for event in pygame.event.get():
@@ -58,7 +60,7 @@ class Controller:
             self._logic_.update(input_event, dt)
 
             # Update View
-            self._view_.update(self._logic_.get_player())
+            self._view_.update()
 
             # time.sleep(0.5)
             # self._game_network_.send({'type': '_EXAMPLE_BROADCAST_', 'instance_id': self._instance_id_})

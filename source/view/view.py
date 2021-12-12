@@ -29,21 +29,16 @@ class MainGameView:
         self._scoreboard_screen_ = None
         self._notification_screen_ = None
 
-        self._player_view_ = None
-        self._enemies_view_ = None
-        self._player_bullets_view_ = None
-        self._enemies_bullets_view = None
+        self._players_view_ = None
+        self._bullets_view_ = None
 
     def update(self, player=None):
         maze_screen_offset_y = self._MAZE_SCREEN_OFFSET_[0] * self._screen_.get_height()
         maze_screen_offset_x = self._MAZE_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
 
-        self._player_view_.add_to_parent(self._screen_)
-        self._player_bullets_view_.draw(self._screen_)
-        self._enemies_bullets_view.draw(self._screen_)
-        self._enemies_view_.draw(self._screen_)
-        self._screen_display_.update()
+        self._players_view_.draw(self._screen_)
+        self._bullets_view_.draw(self._screen_)
 
         # Update Notification View
         notification_screen_offset_y = self._NOTIFICATION_SCREEN_OFFSET_[0] * self._screen_.get_height()
@@ -56,6 +51,8 @@ class MainGameView:
         scoreboard_screen_offset_x = self._SCOREBOARD_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._scoreboard_screen_.add_to_parent(self._screen_, (scoreboard_screen_offset_x, scoreboard_screen_offset_y))
 
+        self._screen_display_.update()
+
     def init_maze(self, maze):
         maze_screen_height = int(self._screen_.get_height() * self._MAZE_SCREEN_RATIO_[0])
         maze_screen_width = int(self._screen_.get_width() * self._MAZE_SCREEN_RATIO_[1])
@@ -64,14 +61,12 @@ class MainGameView:
         self._maze_screen_ = MazeView(maze, maze_screen_height, maze_screen_width)
         self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
 
-    def init_player(self, player, enemies_group):
-        self._player_view_ = PlayerView(player)
-        self._player_view_.add_to_parent(self._screen_)
-        self._enemies_view_ = ViewGroup(enemies_group, PlayerView)
+    def init_players(self, players_group=None):
+        self._players_view_ = ViewGroup(players_group, PlayerView)
+        self._players_view_.draw(self._screen_)
 
-    def init_bullets(self, player_bullets_group, enemy_bullets_group):
-        self._player_bullets_view_ = ViewGroup(player_bullets_group, BulletView)
-        self._enemies_bullets_view = ViewGroup(enemy_bullets_group, BulletView)
+    def init_bullets(self, bullets_group):
+        self._bullets_view_ = ViewGroup(bullets_group, BulletView)
 
     def init_scoreboard(self):
         scoreboard_screen_height = int(self._screen_.get_height() * self._SCOREBOARD_SCREEN_RATIO_[0])
