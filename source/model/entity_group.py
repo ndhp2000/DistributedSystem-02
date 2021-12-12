@@ -71,3 +71,11 @@ class Group(AbstractGroup):
     def entity_collide(entity, group):
         pass
 
+
+class PlayerGroup(Group):
+    def get_scores(self):
+        result = []
+        for player in self._entities_dict:
+            result.append((player.get_id(), player.get_hp(), player.get_player_type()))
+        result = sorted(result, key=lambda p: p[1])
+        return result

@@ -34,6 +34,7 @@ class MainGameView:
         self._bullets_view_ = None
 
     def update(self, player=None):
+        # Update maze
         maze_screen_offset_y = self._MAZE_SCREEN_OFFSET_[0] * self._screen_.get_height()
         maze_screen_offset_x = self._MAZE_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
@@ -48,6 +49,7 @@ class MainGameView:
                                                  (notification_screen_offset_x, notification_screen_offset_y))
 
         # Update Scoreboard View
+        self._scoreboard_screen_.reload_scoreboard()
         scoreboard_screen_offset_y = self._SCOREBOARD_SCREEN_OFFSET_[0] * self._screen_.get_height()
         scoreboard_screen_offset_x = self._SCOREBOARD_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._scoreboard_screen_.add_to_parent(self._screen_, (scoreboard_screen_offset_x, scoreboard_screen_offset_y))
@@ -69,12 +71,12 @@ class MainGameView:
     def init_bullets(self, bullets_group):
         self._bullets_view_ = ViewGroup(bullets_group, BulletView)
 
-    def init_scoreboard(self):
+    def init_scoreboard(self, players):
         scoreboard_screen_height = int(self._screen_.get_height() * self._SCOREBOARD_SCREEN_RATIO_[0])
         scoreboard_screen_width = int(self._screen_.get_width() * self._SCOREBOARD_SCREEN_RATIO_[1])
         scoreboard_screen_offset_y = self._SCOREBOARD_SCREEN_OFFSET_[0] * self._screen_.get_height()
         scoreboard_screen_offset_x = self._SCOREBOARD_SCREEN_OFFSET_[1] * self._screen_.get_width()
-        self._scoreboard_screen_ = ScoreboardView(scoreboard_screen_height, scoreboard_screen_width)
+        self._scoreboard_screen_ = ScoreboardView(scoreboard_screen_height, scoreboard_screen_width, players)
         self._scoreboard_screen_.add_to_parent(self._screen_, (scoreboard_screen_offset_x, scoreboard_screen_offset_y))
 
     def init_notification(self):

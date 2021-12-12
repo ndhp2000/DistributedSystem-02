@@ -44,12 +44,6 @@ class Bullet(Entity):
     def update(self, dt):
         self._move(dt)
 
-    def get_radius(self):
-        return self._radius
-
-    def get_position(self):
-        return self._position.copy()
-
     def is_out_of_range(self):
         if self.is_removed:
             return True

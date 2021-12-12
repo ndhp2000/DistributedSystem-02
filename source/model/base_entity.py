@@ -32,11 +32,3 @@ class Entity:
             return True
 
         return False
-
-
-
-
-
-
-
-

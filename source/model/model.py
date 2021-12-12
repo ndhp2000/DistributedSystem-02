@@ -2,9 +2,9 @@ from collections import deque
 
 import numpy as np
 
-from source.model.entity_group import Group
+from source.model.entity_group import Group, PlayerGroup
 from source.model.maze import Maze
-from source.model.player import Player
+from source.model.player import Player, Bot
 from source.config import *
 
 
@@ -12,17 +12,20 @@ class MainGameLogic:
     def __init__(self):
         self._maze_ = None
         self._events_ = deque()
-        self._players_ = Group()
+        self._players_ = PlayerGroup()
         self._bullets_ = Group()
-
         self.flag = True
 
     def init_maze(self):
         self._maze_ = Maze()
 
-    def init_players(self, player_id=0):
+    def init_players(self):
         pos = np.array([0, 0])
+        player_id = 0
         self._players_.add(Player(pos.astype('float64'), self._maze_, player_id))
+        self._players_.add(Bot(pos.astype('float64'), self._maze_, player_id + 1))
+        self._players_.add(Bot(pos.astype('float64'), self._maze_, player_id + 2))
+        self._players_.add(Bot(pos.astype('float64'), self._maze_, player_id + 3))
 
     def init_bullets(self):
         pass
