@@ -24,18 +24,24 @@ class Group(AbstractGroup):
     def __init__(self):
         super().__init__()
 
+    def __iter__(self):
+        return iter(list(self._entities_dict))
+
     def update(self, *args, **kwargs):
         for entity in self._entities_dict:
             entity.update(*args, **kwargs)
 
 
 class ViewGroup(AbstractGroup):
-    def __init__(self, model_group, class_init_function):
+    def __init__(self, model_group, class_init_function): #View class init
         super().__init__()
 
         for entity in model_group:
             entity_view = class_init_function(entity)
             self._entities_dict[entity_view] = 0
+
+    def __iter__(self):
+        return iter(list(self._entities_dict))
 
     def draw(self, screen: pygame.Surface):
         for entity_view in self._entities_dict:

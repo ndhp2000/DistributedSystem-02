@@ -22,7 +22,7 @@ class Controller:
         self._view_.init_scoreboard()
         self._view_.init_notification()
         self._view_.init_player(self._logic_.get_player(), self._logic_.get_enemies_group())
-        self._view_.init_bullets(self._logic_.get_bullets())
+        self._view_.init_bullets(self._logic_.get_bullets(), self._logic_.get_enemies_bullets_group())
 
         # Init Network
         # self._game_network_ = GameNetwork()

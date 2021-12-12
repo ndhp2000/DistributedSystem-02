@@ -36,6 +36,9 @@ class MainGameLogic:
     def get_enemies_group(self):
         return self._enemies_
 
+    def get_enemies_bullets_group(self):
+        return self._enemies_bullets_
+
     def add_player(self):
         pass
 
