@@ -9,7 +9,7 @@ from source.view.utils import convert_maze_to_world_pos
 class PlayerView(BaseView):
     def __init__(self, player):
         self._player = player
-        r = self._player.radius
+        r = self._player.get_radius()
 
         super().__init__(r * 2, r * 2)
         self._screen_.fill(pygame.Color("black"))

@@ -138,3 +138,9 @@ class Player:
 
     def hit(self, damage):
         print(self.name, 'hit')
+
+    def get_radius(self):
+        return self._radius
+
+    def get_position(self):
+        return self._position.copy()

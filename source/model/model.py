@@ -1,6 +1,6 @@
 from source.model.maze import Maze
 from collections import deque
-from source.model.player import Player, Enemy
+from source.model.player import Player
 from source.config import *
 import numpy as np
 import pygame
@@ -47,8 +47,8 @@ class MainGameLogic:
         self._player_bullets_.update(dt)
         self._enemies_bullets_.update(dt)
 
-        if self.flag:
-            enemy = Enemy(np.array([10, 5]), self._enemies_bullets_, self._enemies_, self._maze_)
+        # if self.flag:
+        #     enemy = Player(np.array([10, 5]), self._enemies_bullets_, self._enemies_, self._maze_)
 
         self.check_collision()
 

@@ -34,3 +34,6 @@ class Bullet:
 
     def update(self, dt):
         self.move(dt)
+
+    def get_radius(self):
+        return self._radius

@@ -29,9 +29,13 @@ class Group(AbstractGroup):
             entity.update(*args, **kwargs)
 
 
-class GroupView(AbstractGroup):
-    def __init__(self):
+class ViewGroup(AbstractGroup):
+    def __init__(self, model_group, class_init_function):
         super().__init__()
+
+        for entity in model_group:
+            entity_view = class_init_function(entity)
+            self._entities_dict[entity_view] = 0
 
     def draw(self, screen: pygame.Surface):
         for entity_view in self._entities_dict:
