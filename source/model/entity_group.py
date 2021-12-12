@@ -61,7 +61,7 @@ class Group(AbstractGroup):
                         collided_entities[entity1] = []
 
                     if remove_entity_group2_on_hit:
-                        entity2._remove()
+                        entity2.remove()
                     else:
                         collided_entities[entity1].append(entity2)
 

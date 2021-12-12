@@ -8,7 +8,7 @@ from source.model.base_entity import Entity
 
 class Bullet(Entity):
     def __init__(self, bullets_group, bullet_id, player_id, position, target, direction):
-        super().__init__(BULLET_RADIUS, position, BULLET_MOVING_SPEED, direction)
+        super().__init__(BULLET_RADIUS, BULLET_MAZE_RADIUS, position, BULLET_MOVING_SPEED, direction)
         self._group = bullets_group
         self._id = bullet_id
         self._target = target
@@ -17,21 +17,21 @@ class Bullet(Entity):
 
         bullets_group.add(self)
 
-    def _remove(self):
+    def remove(self):
         if self._group is not None:
             self._group.remove(self)
 
-        self._is_remove = True
+        self._is_removed = True
 
     def _move(self, dt):
-        print("BULLET MOVE")
-        print(self._position)
-        print(self._direction)
-        print(self._speed * dt)
+        # print("BULLET MOVE")
+        # print(self._position)
+        # print(self._direction)
+        # print(self._speed * dt)
         self._position += DIRECTIONS[self._direction] * self._speed * dt
 
         if self._meet_target(dt):
-            self._remove()
+            self.remove()
 
     def _meet_target(self, dt):
         distance_from_start = np.linalg.norm(self._position - self._initial_position)

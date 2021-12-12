@@ -9,7 +9,7 @@ from source.model.utils import convert_player_direction_to_maze_direction
 
 class Player(Entity):
     def __init__(self, position, maze: Maze, player_id, players_group=None):
-        super().__init__(PLAYER_RADIUS, position, PLAYER_MOVING_SPEED, None)
+        super().__init__(PLAYER_RADIUS, PLAYER_MAZE_RADIUS, position, PLAYER_MOVING_SPEED, None)
         self._maze_ = maze
         self._id = player_id
         self._hp = PLAYER_HP
@@ -145,7 +145,8 @@ class Player(Entity):
             self._recent_running_bullet = bullet
 
     def hit(self, damage):
-        print('Player 1', 'hit')
+        self._hp -= damage
+        print('Player' + str(self._id), 'hit!! HP: ', self._hp)
 
 
 class Bot(Player):

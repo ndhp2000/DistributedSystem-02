@@ -2,15 +2,19 @@ import numpy as np
 
 
 class Entity:
-    def __init__(self, radius, position, speed, direction):
+    def __init__(self, radius, maze_radius, position, speed, direction):
         self._radius = radius
         self._speed = speed
         self._direction = direction
         self._position = position.copy()
         self._is_removed = False
+        self._maze_radius = maze_radius
 
     def get_radius(self):
         return self._radius
+
+    def get_maze_radius(self):
+        return self._maze_radius
 
     def get_speed(self):
         return self._speed
@@ -35,8 +39,11 @@ class Entity:
         entity2_position = entity2.get_position()
         entity2_speed = entity2.get_speed()
 
-        distance_between_entity = np.linalg.norm(entity1_position - entity2_position) - entity1_speed * dt - entity2_speed * dt
-        sum_radius = entity1.get_radius() + entity2.get_radius()
+        #distance_between_entity = np.linalg.norm(entity1_position - entity2_position) - entity1_speed * dt - entity2_speed * dt
+        distance_between_entity = np.linalg.norm(entity1_position - entity2_position)
+        sum_radius = entity1.get_maze_radius() + entity2.get_maze_radius()
+
+        #print([entity1_position, entity2_position, distance_between_entity])
 
         if distance_between_entity <= sum_radius:
             return True
