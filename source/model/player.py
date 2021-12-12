@@ -5,24 +5,24 @@ from source.model.bullet import Bullet
 from source.model.maze import Maze
 from source.model.utils import convert_player_direction_to_maze_direction
 from source.view.utils import convert_maze_to_world_pos
+from source.model.base_entity import Entity
 
 
-class Player:
-    def __init__(self, pos, maze: Maze, player_id=0):
+class Player(Entity):
+    def __init__(self, position, maze: Maze, player_id=0):
+        super().__init__(PLAYER_RADIUS, position, PLAYER_MOVING_SPEED, None)
         self._maze_ = maze
         self._id = player_id
         self._hp = PLAYER_HP
-        self._speed = PLAYER_MOVING_SPEED
-        self._radius = PLAYER_RADIUS
-        self._position = pos.copy()  # MAZE
-        self._previous_anchor = pos.copy()
+        self._previous_anchor = position.copy()
         self._next_anchor = None
         self._current_direction = None
+        self._recent_running_bullet = None
 
         for direction in DIRECTIONS:
-            if self._get_next_anchor(pos, direction) is not None:
-                print(self._get_next_anchor(pos, direction))
-                self._next_anchor = self._get_next_anchor(pos, direction)
+            if self._get_next_anchor(position, direction) is not None:
+                print(self._get_next_anchor(position, direction))
+                self._next_anchor = self._get_next_anchor(position, direction)
                 self._current_direction = direction
                 break
         self._next_direction = None
@@ -119,17 +119,22 @@ class Player:
         return cell_pos
 
     def shoot(self, bullets_group):
-        target = self.get_bullet_target()
 
-        if target is None:
-            return
 
         # print("SHOOT")
         # print(len(bullets_group))
         # print(self._position)
         # print(target)
         # print(self._current_direction)
-        bullet = Bullet(bullets_group, 0, self._position, target, self._current_direction)
+
+        if self._recent_running_bullet is None or self._recent_running_bullet.is_out_of_range():
+            target = self.get_bullet_target()
+
+            if target is None:
+                return
+
+            bullet = Bullet(bullets_group, 0, self._position, target, self._current_direction)
+            self._recent_running_bullet = bullet
 
     def hit(self, damage):
         print(self.name, 'hit')
