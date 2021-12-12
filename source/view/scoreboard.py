@@ -2,7 +2,7 @@ import pygame
 
 from source.assets import MazeViewAsset
 from source.config import NAME_TAG_FONT_SIZE, CONSOLE_FONT_SIZE
-from source.model.enity_group import PlayerGroup
+from source.model.entity_group import PlayerGroup
 from source.view.base_view import BaseView
 
 

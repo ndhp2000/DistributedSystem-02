@@ -7,29 +7,27 @@ from source.model.base_entity import Entity
 
 
 class Bullet(Entity):
-    def __init__(self, bullets_group, bullet_id, position, target, direction):
+    def __init__(self, bullets_group, bullet_id, player_id, position, target, direction):
         super().__init__(BULLET_RADIUS, position, BULLET_MOVING_SPEED, direction)
-        self._group = {}
+        self._group = bullets_group
         self._id = bullet_id
         self._target = target
-        self._player_id = 0
+        self._player_id = player_id
         self._initial_position = self._position.copy()
-        self.is_removed = False
 
         bullets_group.add(self)
-        self._group[bullets_group] = 0
 
     def _remove(self):
-        for group in self._group:
-            group.remove(self)
+        if self._group is not None:
+            self._group.remove(self)
 
-        self.is_removed = True
+        self._is_remove = True
 
     def _move(self, dt):
-        # print("BULLET MOVE")
-        # print(self._position)
-        # print(self._direction)
-        # print(self._speed * dt)
+        print("BULLET MOVE")
+        print(self._position)
+        print(self._direction)
+        print(self._speed * dt)
         self._position += DIRECTIONS[self._direction] * self._speed * dt
 
         if self._meet_target(dt):
@@ -44,8 +42,11 @@ class Bullet(Entity):
     def update(self, dt):
         self._move(dt)
 
+    def get_origin_id(self):
+        return self._player_id
+
     def is_out_of_range(self):
-        if self.is_removed:
+        if self._is_removed:
             return True
 
         distance = np.linalg.norm(self._position - self._initial_position)

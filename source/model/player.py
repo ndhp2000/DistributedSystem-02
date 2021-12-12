@@ -8,7 +8,7 @@ from source.model.utils import convert_player_direction_to_maze_direction
 
 
 class Player(Entity):
-    def __init__(self, position, maze: Maze, player_id):
+    def __init__(self, position, maze: Maze, player_id, players_group=None):
         super().__init__(PLAYER_RADIUS, position, PLAYER_MOVING_SPEED, None)
         self._maze_ = maze
         self._id = player_id
@@ -18,6 +18,7 @@ class Player(Entity):
         self._current_direction = None
         self._recent_running_bullet = None
         self._player_type = 'human'
+        self._group = players_group
 
         for direction in DIRECTIONS:
             if self._get_next_anchor(position, direction) is not None:
@@ -27,6 +28,12 @@ class Player(Entity):
                 break
         self._next_direction = None
         print(self._current_direction, self._next_direction, self._previous_anchor, self._next_anchor)
+
+    def _remove(self):
+        if self._group is not None:
+            self._group.remove(self)
+
+        self._is_removed = True
 
     def _set_next_direction(self, input_direction):
         self._next_direction = input_direction
@@ -93,6 +100,9 @@ class Player(Entity):
     def set_position(self, pos):
         self._position = pos.copy()
 
+    def get_origin_id(self):
+        return self._id
+
     def get_id(self):
         return self._id
 
@@ -121,11 +131,17 @@ class Player(Entity):
         return target_cell_pos
 
     def shoot(self, bullets_group):
+        #print(self._recent_running_bullet)
         if self._recent_running_bullet is None or self._recent_running_bullet.is_out_of_range():
             target = self._get_bullet_target()
             if target is None:
                 return
-            bullet = Bullet(bullets_group, 0, self._position, target, self._current_direction)
+
+            print('SHOOT')
+            print(len(bullets_group))
+            print(self._id)
+            print('\n')
+            bullet = Bullet(bullets_group, 0, self._id, self._position, target, self._current_direction)
             self._recent_running_bullet = bullet
 
     def hit(self, damage):

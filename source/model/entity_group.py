@@ -48,20 +48,20 @@ class Group(AbstractGroup):
             del self._entities_dict[entity]
 
     @staticmethod
-    def groups_collide(group1, group2, remove_entity_group2_on_hit=False) -> {}:
+    def groups_collide(group1, group2, remove_entity_group2_on_hit=False, dt=0) -> {}:
         collide_function = Entity.collide
         collided_entities = {}
 
         for entity1 in group1:
             for entity2 in group2:
-                is_collided = collide_function(entity1, entity2)
+                is_collided = collide_function(entity1, entity2, dt)
 
                 if is_collided:
                     if entity1 not in collided_entities:
                         collided_entities[entity1] = []
 
                     if remove_entity_group2_on_hit:
-                        entity2.remove()
+                        entity2._remove()
                     else:
                         collided_entities[entity1].append(entity2)
 
