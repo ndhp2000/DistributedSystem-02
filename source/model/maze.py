@@ -46,7 +46,7 @@ class Maze:
     def __init__(self, width=MAP_WIDTH, height=MAP_HEIGHT):
         self._width_ = width
         self._height_ = height
-        self._adj_matrix_ = np.zeros((self._height_, self._width_, 4))  # HEIGHT x WIDTH x 4
+        self._adj_matrix_ = np.zeros((self._height_, self._width_, 5))  # HEIGHT x WIDTH x 4
         self._generate_()
 
     def _generate_(self):
@@ -88,6 +88,19 @@ class Maze:
 
     def is_connected_to_direction(self, p, direction):
         return self._adj_matrix_[p[0], p[1], direction]
+
+    def is_cell_occupied(self, p, player_id):
+        if self._adj_matrix_[p[0], p[1], 4] == player_id:
+            return False
+        elif self._adj_matrix_[p[0], p[1], 4] == 0:
+            return False
+        return True
+
+    def set_cell_occupied(self, p, player_id):
+        self._adj_matrix_[p[0], p[1], 4] = player_id
+
+    def set_cell_free(self, p):
+        self._adj_matrix_[p[0], p[1], 4] = 0
 
     def __str__(self):
         result = StringIO()

@@ -26,7 +26,7 @@ class Entity:
         return self._is_removed
 
     @staticmethod
-    def collide(entity1, entity2, dt):
+    def collide(entity1, entity2):
         if entity1.get_origin_id() == entity2.get_origin_id():
             return False
 
@@ -34,16 +34,10 @@ class Entity:
             return False
 
         entity1_position = entity1.get_position()
-        entity1_speed = entity1.get_speed()
-
         entity2_position = entity2.get_position()
-        entity2_speed = entity2.get_speed()
 
-        #distance_between_entity = np.linalg.norm(entity1_position - entity2_position) - entity1_speed * dt - entity2_speed * dt
         distance_between_entity = np.linalg.norm(entity1_position - entity2_position)
         sum_radius = entity1.get_maze_radius() + entity2.get_maze_radius()
-
-        #print([entity1_position, entity2_position, distance_between_entity])
 
         if distance_between_entity <= sum_radius:
             return True

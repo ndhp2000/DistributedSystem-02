@@ -12,10 +12,14 @@ class PlayerView(BaseView):
         self.name = "Player"
 
         r = self._player.get_radius()
+        if self._player.is_main_player():
+            color = pygame.Color("green")
+        else:
+            color = pygame.Color("red")
 
         super().__init__(r * 2, r * 2)
         self._screen_.fill(pygame.Color("black"))
-        pygame.draw.circle(self._screen_, pygame.Color("white"),
+        pygame.draw.circle(self._screen_, color,
                             (int(self._screen_.get_height() /2),
                             int(self._screen_.get_width() /2)),
                             r)

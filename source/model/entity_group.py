@@ -48,13 +48,13 @@ class Group(AbstractGroup):
             del self._entities_dict[entity]
 
     @staticmethod
-    def groups_collide(group1, group2, remove_entity_group2_on_hit=False, dt=0) -> {}:
+    def groups_collide(group1, group2, remove_entity_group2_on_hit=False) -> {}:
         collide_function = Entity.collide
         collided_entities = {}
 
         for entity1 in group1:
             for entity2 in group2:
-                is_collided = collide_function(entity1, entity2, dt)
+                is_collided = collide_function(entity1, entity2)
 
                 if is_collided:
                     if entity1 not in collided_entities:
@@ -79,3 +79,4 @@ class PlayerGroup(Group):
             result.append((player.get_id(), player.get_hp(), player.get_player_type()))
         result = sorted(result, key=lambda p: p[1])
         return result
+

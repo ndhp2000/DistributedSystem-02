@@ -8,7 +8,7 @@ from source.model.utils import convert_player_direction_to_maze_direction
 
 
 class Player(Entity):
-    def __init__(self, position, maze: Maze, player_id, players_group=None):
+    def __init__(self, position, maze: Maze, player_id, players_group=None, player_type=ENEMY):
         super().__init__(PLAYER_RADIUS, PLAYER_MAZE_RADIUS, position, PLAYER_MOVING_SPEED, None)
         self._maze_ = maze
         self._id = player_id
@@ -17,17 +17,18 @@ class Player(Entity):
         self._next_anchor = None
         self._current_direction = None
         self._recent_running_bullet = None
-        self._player_type = 'human'
+        self._player_type = player_type
         self._group = players_group
 
         for direction in DIRECTIONS:
             if self._get_next_anchor(position, direction) is not None:
-                print(self._get_next_anchor(position, direction))
+                #print(self._get_next_anchor(position, direction))
                 self._next_anchor = self._get_next_anchor(position, direction)
                 self._current_direction = direction
                 break
+
         self._next_direction = None
-        print(self._current_direction, self._next_direction, self._previous_anchor, self._next_anchor)
+        #print(self._current_direction, self._next_direction, self._previous_anchor, self._next_anchor)
 
     def _remove(self):
         if self._group is not None:
@@ -50,7 +51,16 @@ class Player(Entity):
         # print("CALL UPDATE")
         self._position += DIRECTIONS[self._current_direction] * self._speed * dt
 
+        if self._next_anchor is not None and self._maze_.is_cell_occupied((round(self._position[1] + 0.25), round(self._position[0] + 0.25)), self._id):
+            self._next_anchor = self._previous_anchor.copy()
+            self._position = self._previous_anchor.copy()
+            self._next_direction = None
+            self._current_direction *= -1
+            return
+
         if self._meet_next_anchor():
+            self._maze_.set_cell_free((round(self._previous_anchor[1]), round(self._previous_anchor[0])))
+
             # print("MEET AN ANCHOR")
             # print('Position: ', self._position)
             # print('Direction: ', self._current_direction, self._next_direction)
@@ -66,10 +76,9 @@ class Player(Entity):
                 # print("MOVE SAME DIRECTION")
                 self._previous_anchor = self._next_anchor
                 self._next_anchor = self._get_next_anchor(self._previous_anchor, self._current_direction)
+
             self._next_direction = None
-            # print('Position: ', self._position)
-            # print('Direction: ', self._current_direction, self._next_direction)
-            # print('Anchor: ', self._previous_anchor, self._next_anchor)
+            self._maze_.set_cell_occupied((round(self._position[1] - 0.25), round(self._position[0] - 0.25)), self._id)
 
         if self._next_direction == -self._current_direction:
             # print("MOVE REVERSE DIRECTION")
@@ -130,6 +139,12 @@ class Player(Entity):
             return None
         return target_cell_pos
 
+    def is_main_player(self):
+        if self._player_type == PLAYER:
+            return True
+        else:
+            return False
+
     def shoot(self, bullets_group):
         #print(self._recent_running_bullet)
         if self._recent_running_bullet is None or self._recent_running_bullet.is_out_of_range():
@@ -137,10 +152,10 @@ class Player(Entity):
             if target is None:
                 return
 
-            print('SHOOT')
-            print(len(bullets_group))
-            print(self._id)
-            print('\n')
+            # print('SHOOT')
+            # print(len(bullets_group))
+            # print(self._id)
+            # print('\n')
             bullet = Bullet(bullets_group, 0, self._id, self._position, target, self._current_direction)
             self._recent_running_bullet = bullet
 
@@ -153,9 +168,8 @@ class Bot(Player):
     COOLDOWN_COMMAND = 20
 
     def __init__(self, position, maze: Maze, player_id):
-        super().__init__(position, maze, player_id)
+        super().__init__(position, maze, player_id, player_type=MACHINE)
         self._counter = self.COOLDOWN_COMMAND
-        self._player_type = 'machine'
 
     def update(self, event, dt, bullets_group):  # Upgrade later
         event = self.create_command()

@@ -21,9 +21,10 @@ class MainGameLogic:
 
     def init_players(self):
         pos = np.array([0, 0])
-        player_id = 0
-        self._players_.add(Player(pos.astype('float64'), self._maze_, player_id))
-        self._players_.add(Bot(pos.astype('float64'), self._maze_, player_id + 1))
+        pos1 = np.array([3, 4])
+        player_id = 1
+        self._players_.add(Player(pos.astype('float64'), self._maze_, player_id, player_type=PLAYER))
+        self._players_.add(Bot(pos1.astype('float64'), self._maze_, player_id + 1))
         # self._players_.add(Bot(pos.astype('float64'), self._maze_, player_id + 2))
         # self._players_.add(Bot(pos.astype('float64'), self._maze_, player_id + 3))
 
@@ -44,15 +45,13 @@ class MainGameLogic:
 
     def update(self, event=None, dt=0):
         player_id = 0  # FAKE
-        self.check_collisions(dt)
+        self.check_collisions()
         self._players_.update(event, dt, self._bullets_)
 
         self._bullets_.update(dt)
 
-
-    def check_collisions(self, dt):
-        players_hit = Group.groups_collide(self._players_, self._bullets_, True, dt)
-
+    def check_collisions(self):
+        players_hit = Group.groups_collide(self._players_, self._bullets_, True)
         #print(players_hit)
         for player in players_hit:
             player.hit(BULLET_DAMAGE)
