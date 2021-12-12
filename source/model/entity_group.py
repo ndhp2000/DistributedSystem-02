@@ -1,3 +1,6 @@
+from source.model.base_entity import Entity
+
+
 class AbstractGroup:
     def __init__(self):
         self._entities_dict = {}
@@ -43,3 +46,28 @@ class Group(AbstractGroup):
 
         for entity in self._removed_entities:
             del self._entities_dict[entity]
+
+    @staticmethod
+    def groups_collide(group1, group2, remove_entity_group2_on_hit=False) -> {}:
+        collide_function = Entity.collide
+        collided_entities = {}
+
+        for entity1 in group1:
+            for entity2 in group2:
+                is_collided = collide_function(entity1, entity2)
+
+                if is_collided:
+                    if entity1 not in collided_entities:
+                        collided_entities[entity1] = []
+
+                    if remove_entity_group2_on_hit:
+                        entity2.remove()
+                    else:
+                        collided_entities[entity1].append(entity2)
+
+        return collided_entities
+
+    @staticmethod
+    def entity_collide(entity, group):
+        pass
+

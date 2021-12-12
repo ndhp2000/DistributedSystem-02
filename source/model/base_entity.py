@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Entity:
     def __init__(self, radius, position, speed, direction):
         self._radius = radius
@@ -13,3 +16,27 @@ class Entity:
 
     def get_position(self):
         return self._position.copy()
+
+    @staticmethod
+    def collide(entity1, entity2, dt):
+        entity1_position = entity1.get_position()
+        entity1_speed = entity1.get_speed()
+
+        entity2_position = entity2.get_position()
+        entity2_speed = entity2.get_speed()
+
+        distance_between_entity = np.linalg.norm(entity1_position - entity2_position) - entity1_speed * dt - entity2_speed * st
+        sum_radius = entity1.get_radius() + entity2.get_radius()
+
+        if distance_between_entity <= sum_radius:
+            return True
+
+        return False
+
+
+
+
+
+
+
+

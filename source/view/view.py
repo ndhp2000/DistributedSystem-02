@@ -7,7 +7,7 @@ from source.view.notification import NotificationView
 from source.view.player import PlayerView
 from source.view.scoreboard import ScoreboardView
 from source.view.utils import convert_maze_to_world_pos
-from source.model.enity_group import Group
+from source.model.entity_group import Group
 from source.view.view_group import ViewGroup
 
 

@@ -2,9 +2,10 @@ from collections import deque
 
 import numpy as np
 
-from source.model.enity_group import Group
+from source.model.entity_group import Group
 from source.model.maze import Maze
 from source.model.player import Player
+from source.config import *
 
 
 class MainGameLogic:
@@ -44,17 +45,14 @@ class MainGameLogic:
 
         self._bullets_.update(dt)
 
-        # if self.flag:
-        #     enemy = Player(np.array([10, 5]), self._enemies_bullets_, self._enemies_, self._maze_)
+        if self.flag:
+            enemy = Player(np.array([10, 5]), self._enemies_bullets_, self._enemies_, self._maze_)
 
-        # self.check_collision()
+        self.check_collisions()
 
-    # def check_collision(self):
-    #     collided_bullet = pygame.sprite.spritecollide(self._players_, self._enemies_bullets_, True)
-    #     enemies_hit = pygame.sprite.groupcollide(self._enemies_, self._player_bullets_, False, True)
-    #
-    #     for enemy in enemies_hit:
-    #         enemy.hit(DAMAGE)
-    #
-    #     for bullet in collided_bullet:
-    #         self._player_.hit(DAMAGE)
+    def check_collisions(self):
+        players_hit = Group.group_collide(self._players_, self._bullets_, True)
+
+        for player in players_hit:
+            player.hit(BULLET_DAMAGE)
+

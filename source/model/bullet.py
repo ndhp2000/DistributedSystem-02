@@ -2,7 +2,7 @@ import pygame
 from source.config import *
 from source.model.maze import Maze
 from source.view.utils import convert_maze_to_world_pos
-from source.model.enity_group import Group
+from source.model.entity_group import Group
 from source.model.base_entity import Entity
 
 

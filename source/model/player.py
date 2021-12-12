@@ -119,8 +119,6 @@ class Player(Entity):
         return target_cell_pos
 
     def shoot(self, bullets_group):
-
-
         # print("SHOOT")
         # print(len(bullets_group))
         # print(self._position)
@@ -137,5 +135,5 @@ class Player(Entity):
             self._recent_running_bullet = bullet
 
     def hit(self, damage):
-        print(self.name, 'hit')
+        print('Player 1', 'hit')
 
