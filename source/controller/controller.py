@@ -20,17 +20,13 @@ class Controller:
         # Init View
         self._view_ = MainGameView()
         self._view_.init_maze(self._logic_.get_maze())
-        self._view_.init_scoreboard()
+        self._view_.init_scoreboard(self._logic_.get_players())
         self._view_.init_notification()
         self._view_.init_players(self._logic_.get_players())
         self._view_.init_bullets(self._logic_.get_bullets())
 
-
-        # Init Network
-        # self._game_network_ = GameNetwork()
-        # self._instance_id_ = self._game_network_.join_game()
-
-    def get_event(self, key_pressed):
+    @staticmethod
+    def get_event(key_pressed):
         if key_pressed == pygame.K_UP:
             return UP
         if key_pressed == pygame.K_DOWN:
@@ -61,6 +57,3 @@ class Controller:
 
             # Update View
             self._view_.update()
-
-            # time.sleep(0.5)
-            # self._game_network_.send({'type': '_EXAMPLE_BROADCAST_', 'instance_id': self._instance_id_})

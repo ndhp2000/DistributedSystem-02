@@ -2,6 +2,7 @@ import pygame
 
 from source.assets import MazeViewAsset
 from source.config import NAME_TAG_FONT_SIZE, CONSOLE_FONT_SIZE
+from source.model.enity_group import PlayerGroup
 from source.view.base_view import BaseView
 
 
@@ -11,8 +12,9 @@ class ScoreboardView(BaseView):
     COLUMNS_WIDTH_OFFSET = [1 / 14, 5 / 14, 9 / 14]
     COLUMNS_HEIGHT_RATIO = 1 / 10
 
-    def __init__(self, screen_height, screen_width):
+    def __init__(self, screen_height, screen_width, players_logic: PlayerGroup):
         super().__init__(screen_height, screen_width)
+        self._players_logic_ = players_logic
         self._name_tag_font_ = pygame.font.SysFont('notomono', NAME_TAG_FONT_SIZE)
         self._text_font_ = pygame.font.SysFont('notomono', CONSOLE_FONT_SIZE)
         self._draw_borders_()
@@ -38,7 +40,11 @@ class ScoreboardView(BaseView):
         self._print_("SCORE", 0, 1)
         self._print_("TYPE", 0, 2)
 
-        for i in range(1, 5):
-            self._print_("name", i, 0)
-            self._print_(str(i * 2), i, 1)
-            self._print_("bot", i, 2)
+    def reload_scoreboard(self):
+        self._clear_view()
+        self._draw_borders_()
+        scoreboard = self._players_logic_.get_scores()
+        for row, record in enumerate(scoreboard):
+            self._print_(str(record[0]), row + 1, 0)
+            self._print_(str(record[1]), row + 1, 1)
+            self._print_(str(record[2]), row + 1, 2)

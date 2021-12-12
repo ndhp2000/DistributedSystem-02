@@ -1,15 +1,14 @@
-import pygame
+import random
 
 from source.config import *
+from source.model.base_entity import Entity
 from source.model.bullet import Bullet
 from source.model.maze import Maze
 from source.model.utils import convert_player_direction_to_maze_direction
-from source.view.utils import convert_maze_to_world_pos
-from source.model.base_entity import Entity
 
 
 class Player(Entity):
-    def __init__(self, position, maze: Maze, player_id=0):
+    def __init__(self, position, maze: Maze, player_id):
         super().__init__(PLAYER_RADIUS, position, PLAYER_MOVING_SPEED, None)
         self._maze_ = maze
         self._id = player_id
@@ -18,6 +17,7 @@ class Player(Entity):
         self._next_anchor = None
         self._current_direction = None
         self._recent_running_bullet = None
+        self._player_type = 'human'
 
         for direction in DIRECTIONS:
             if self._get_next_anchor(position, direction) is not None:
@@ -86,7 +86,6 @@ class Player(Entity):
     def _get_next_anchor(self, pos, player_direction):
         direction = convert_player_direction_to_maze_direction(player_direction)
         if self._maze_.is_connected_to_direction((int(pos[1]), int(pos[0])), direction):
-            # print("GET NEXT ANCHOR ", pos, direction)
             return np.array([pos[0] + Maze.DELTA[direction][1], pos[1] + Maze.DELTA[direction][0]])
         else:
             return None
@@ -94,11 +93,14 @@ class Player(Entity):
     def set_position(self, pos):
         self._position = pos.copy()
 
-    def get_radius(self):
-        return self._radius
+    def get_id(self):
+        return self._id
 
-    def get_position(self):
-        return self._position.copy()
+    def get_hp(self):
+        return self._hp
+
+    def get_player_type(self):
+        return self._player_type
 
     def update(self, event, dt, bullets_group):
         if event in PLAYER_MOVEMENT:
@@ -107,7 +109,7 @@ class Player(Entity):
             self.shoot(bullets_group)
         self._move(dt)
 
-    def get_bullet_target(self):
+    def _get_bullet_target(self):
         target_cell_pos = np.array([int(self._position[0]), int(self._position[1])])
 
         maze_direction = convert_player_direction_to_maze_direction(self._current_direction)
@@ -119,23 +121,40 @@ class Player(Entity):
         return target_cell_pos
 
     def shoot(self, bullets_group):
-
-
-        # print("SHOOT")
-        # print(len(bullets_group))
-        # print(self._position)
-        # print(target)
-        # print(self._current_direction)
-
         if self._recent_running_bullet is None or self._recent_running_bullet.is_out_of_range():
-            target = self.get_bullet_target()
-
+            target = self._get_bullet_target()
             if target is None:
                 return
-
             bullet = Bullet(bullets_group, 0, self._position, target, self._current_direction)
             self._recent_running_bullet = bullet
 
     def hit(self, damage):
         print(self.name, 'hit')
 
+
+class Bot(Player):
+    COOLDOWN_COMMAND = 20
+
+    def __init__(self, position, maze: Maze, player_id):
+        super().__init__(position, maze, player_id)
+        self._counter = self.COOLDOWN_COMMAND
+        self._player_type = 'machine'
+
+    def update(self, event, dt, bullets_group):  # Upgrade later
+        event = self.create_command()
+        if event in PLAYER_MOVEMENT:
+            self._set_next_direction(event)
+        elif event in PLAYER_SHOOT:
+            self.shoot(bullets_group)
+        self._move(dt)
+
+    def create_command(self):
+        self._counter -= 1
+        if self._counter == 0:
+            self._counter = self.COOLDOWN_COMMAND
+            rand_num = random.randint(-N_TYPE_COMMANDS, N_TYPE_COMMANDS - 1)  # TODO UPDATE FOR BACKEND
+            if rand_num < 0:
+                return SHOOT
+            else:
+                return list(PLAYER_MOVEMENT.keys())[rand_num - 1]
+        return None
