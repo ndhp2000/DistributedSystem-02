@@ -10,12 +10,13 @@ from ..view.view import MainGameView
 
 class Controller:
     def __init__(self):
+        self._clock = pygame.time.Clock()
+
         # Init Logic
         self._logic_ = MainGameLogic()
         self._logic_.init_maze()
         self._logic_.init_players()
         self._logic_.init_bullets()
-        self.clock = pygame.time.Clock()
 
         # Init View
         self._view_ = MainGameView()
@@ -41,8 +42,7 @@ class Controller:
 
     def loop(self):
         while True:
-            # Event Handler
-            dt = self.clock.tick(60) / 1000
+            dt = self._clock.tick(60) / 1000
 
             input_event = None
             for event in pygame.event.get():
@@ -52,8 +52,6 @@ class Controller:
                 if event.type == pygame.KEYDOWN:
                     input_event = self.get_event(event.key)
 
-            # Update Logic
             self._logic_.update(input_event, dt)
 
-            # Update View
             self._view_.update()
