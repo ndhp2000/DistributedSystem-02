@@ -51,8 +51,11 @@ class MainGameLogic:
         self._bullets_.update(dt)
 
     def check_collisions(self):
-        players_hit = Group.groups_collide(self._players_, self._bullets_, True)
+        players_hit = Group.groups_collide(self._players_, self._bullets_, False)
         #print(players_hit)
         for player in players_hit:
+            for bullet in players_hit[player]:
+                self._players_.reward_player(bullet.get_origin_id(), PLAYER_REWARD)
+                bullet.remove()
             player.hit(BULLET_DAMAGE)
 

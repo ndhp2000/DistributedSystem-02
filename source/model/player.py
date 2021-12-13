@@ -51,7 +51,7 @@ class Player(Entity):
         # print("CALL UPDATE")
         self._position += DIRECTIONS[self._current_direction] * self._speed * dt
 
-        if self._next_anchor is not None and self._maze_.is_cell_occupied((round(self._position[1] + 0.25), round(self._position[0] + 0.25)), self._id):
+        if self._next_anchor is not None and self._maze_.is_cell_occupied((round(self._position[1] + COLLISION_RANGE), round(self._position[0] + COLLISION_RANGE)), self._id):
             self._next_anchor = self._previous_anchor.copy()
             self._position = self._previous_anchor.copy()
             self._next_direction = None
@@ -78,7 +78,7 @@ class Player(Entity):
                 self._next_anchor = self._get_next_anchor(self._previous_anchor, self._current_direction)
 
             self._next_direction = None
-            self._maze_.set_cell_occupied((round(self._position[1] - 0.25), round(self._position[0] - 0.25)), self._id)
+            self._maze_.set_cell_occupied((round(self._position[1] - COLLISION_RANGE), round(self._position[0] - COLLISION_RANGE)), self._id)
 
         if self._next_direction == -self._current_direction:
             # print("MOVE REVERSE DIRECTION")
@@ -159,9 +159,39 @@ class Player(Entity):
             bullet = Bullet(bullets_group, 0, self._id, self._position, target, self._current_direction)
             self._recent_running_bullet = bullet
 
+        self._hp -= BULLET_COST
+
     def hit(self, damage):
         self._hp -= damage
         print('Player' + str(self._id), 'hit!! HP: ', self._hp)
+        self.rand_position_and_direction()
+
+    def rand_position_and_direction(self):
+        self._next_direction = None
+
+        while True:
+            x = random.randint(0, MAP_WIDTH - 1)
+            y = random.randint(0, MAP_HEIGHT - 1)
+            print(x, y)
+
+            if not self._maze_.is_cell_occupied((y, x), self._id):
+                for direction in DIRECTIONS:
+                    if self._get_next_anchor((x, y), direction) is not None:
+                        # print(self._get_next_anchor(position, direction))
+
+                        self._maze_.set_cell_free((round(self._position[1] - COLLISION_RANGE), round(self._position[0] - COLLISION_RANGE)))
+                        self._maze_.set_cell_free((round(self._position[1] + COLLISION_RANGE), round(self._position[0] + COLLISION_RANGE)))
+
+                        self._position = np.array([x, y], dtype='float64')
+                        self._maze_.set_cell_occupied((round(self._position[1]), round(self._position[0])), self._id)
+
+                        self._next_anchor = self._get_next_anchor(self._position, direction)
+                        self._current_direction = direction
+                        return
+
+    def reward(self, hp):
+        self._hp += hp
+        print('Player' + str(self._id), 'reward!! HP: ', self._hp)
 
 
 class Bot(Player):

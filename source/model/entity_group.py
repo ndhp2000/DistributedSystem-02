@@ -80,3 +80,9 @@ class PlayerGroup(Group):
         result = sorted(result, key=lambda p: p[1])
         return result
 
+    def reward_player(self, player_id, reward_amount):
+        for player in self._entities_dict:
+            if player.get_id() == player_id:
+                player.reward(reward_amount)
+                break
+
