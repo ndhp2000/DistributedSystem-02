@@ -1,12 +1,15 @@
 from collections import deque
 
 import numpy as np
+import logging
+import sys
 
 from source.model.entity_group import Group, PlayerGroup
 from source.model.maze import Maze
 from source.model.player import Player, Bot
 from source.config import *
 
+logger = logging.getLogger("game-model")
 
 class MainGameLogic:
     def __init__(self):
@@ -14,7 +17,8 @@ class MainGameLogic:
         self._events_ = deque()
         self._players_ = PlayerGroup()
         self._bullets_ = Group()
-        self.flag = True
+        self._pause_flag = False
+        self._debug_flag = False
 
     def init_maze(self):
         self._maze_ = Maze()
@@ -45,7 +49,18 @@ class MainGameLogic:
 
     def update(self, event=None, dt=0):
         player_id = 0  # FAKE
+        if event == EXIT:
+            self._debug_flag = True
+            print('Enter debug mode')
+            return
+
+        if self._debug_flag:
+            np.set_printoptions(threshold=sys.maxsize)
+            logger.info(self._maze_._adj_matrix_)
+            self._debug_flag = False
+
         self.check_collisions()
+
         self._players_.update(event, dt, self._bullets_)
 
         self._bullets_.update(dt)

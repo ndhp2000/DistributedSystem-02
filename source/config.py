@@ -38,6 +38,7 @@ DOWN = -1
 LEFT = 2
 RIGHT = -2
 SHOOT = 3
+EXIT = 4
 
 DIRECTIONS = {
     UP: np.array([0, -1]),

@@ -78,8 +78,10 @@ class Player(Entity):
                 self._next_anchor = self._get_next_anchor(self._previous_anchor, self._current_direction)
 
             self._next_direction = None
-            self._maze_.set_cell_occupied((round(self._position[1] - COLLISION_RANGE), round(self._position[0] - COLLISION_RANGE)), self._id)
+            self._maze_.set_cell_occupied((round(self._position[1]), round(self._position[0])), self._id)
+            return
 
+            #print('Cell occupied: ', self._position)
         if self._next_direction == -self._current_direction:
             # print("MOVE REVERSE DIRECTION")
             # print('Position: ', self._position)
@@ -163,7 +165,7 @@ class Player(Entity):
 
     def hit(self, damage):
         self._hp -= damage
-        print('Player' + str(self._id), 'hit!! HP: ', self._hp)
+        #print('Player' + str(self._id), 'hit!! HP: ', self._hp)
         self.rand_position_and_direction()
 
     def rand_position_and_direction(self):
@@ -172,12 +174,11 @@ class Player(Entity):
         while True:
             x = random.randint(0, MAP_WIDTH - 1)
             y = random.randint(0, MAP_HEIGHT - 1)
-            print(x, y)
 
             if not self._maze_.is_cell_occupied((y, x), self._id):
                 for direction in DIRECTIONS:
                     if self._get_next_anchor((x, y), direction) is not None:
-                        # print(self._get_next_anchor(position, direction))
+                        print("New position: ", self._get_next_anchor((x, y), direction))
 
                         self._maze_.set_cell_free((round(self._position[1] - COLLISION_RANGE), round(self._position[0] - COLLISION_RANGE)))
                         self._maze_.set_cell_free((round(self._position[1] + COLLISION_RANGE), round(self._position[0] + COLLISION_RANGE)))
@@ -195,7 +196,7 @@ class Player(Entity):
 
 
 class Bot(Player):
-    COOLDOWN_COMMAND = 20
+    COOLDOWN_COMMAND = 10
 
     def __init__(self, position, maze: Maze, player_id):
         super().__init__(position, maze, player_id, player_type=MACHINE)

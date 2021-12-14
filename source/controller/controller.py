@@ -37,6 +37,8 @@ class Controller:
             return RIGHT
         if key_pressed == pygame.K_SPACE:
             return SHOOT
+        if key_pressed == pygame.K_q:
+            return EXIT # Pause game for now to debug, change to exit later
         return None
 
     def loop(self):
