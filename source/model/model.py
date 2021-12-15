@@ -1,34 +1,40 @@
-from collections import deque
+from random import Random
 
-import numpy as np
-
+from source.config import *
 from source.model.entity_group import Group, PlayerGroup
 from source.model.maze import Maze
-from source.model.player import Player, Bot
-from source.config import *
+from source.model.player import Player
 
 
 class MainGameLogic:
-    def __init__(self):
+    def __init__(self, seed):
+        self.HANDLERS_MAP = {
+            '_JOIN_GAME_': self._handle_join_game_,
+            '_GAME_ACTION_': self._handle_game_action_,
+            '_LOG_OUT_': self._handle_log_out_,
+        }
+
         self._maze_ = None
-        self._events_ = deque()
         self._players_ = PlayerGroup()
         self._bullets_ = Group()
+        self._seed_ = seed
+        self._random_ = Random(seed)
         self.flag = True
 
-    def init_maze(self):
-        self._maze_ = Maze()
+    def init_maze(self, maze_seed):
+        self._maze_ = Maze(maze_seed)
 
-    def init_players(self):
-        pos = np.array([0, 0])
-        pos1 = np.array([3, 4])
-        player_id = 1
-        self._players_.add(Player(pos.astype('float64'), self._maze_, player_id, player_type=PLAYER))
-        self._players_.add(Bot(pos1.astype('float64'), self._maze_, player_id + 1))
-        # self._players_.add(Bot(pos.astype('float64'), self._maze_, player_id + 2))
-        # self._players_.add(Bot(pos.astype('float64'), self._maze_, player_id + 3))
+    def init_players(self, players=None):
+        pass
+        # new_position = np.array((self._random_.randint(0, self._maze_.get_width() - 1),
+        #                          self._random_.randint(0, self._maze_.get_height() - 1)), dtype='float64')
+        # self.add_player(
+        #     Player(new_position, self._maze_, 18120143, self._players_, 123))
+        #
+        # self.add_player(
+        #     Bot(new_position, self._maze_, 19201412, self._players_, 456))
 
-    def init_bullets(self):
+    def init_bullets(self, bullets=None):
         pass
 
     def get_maze(self):
@@ -43,19 +49,43 @@ class MainGameLogic:
     def add_player(self, new_player):
         self._players_.add(new_player)
 
-    def update(self, event=None, dt=0):
-        player_id = 0  # FAKE
-        self.check_collisions()
-        self._players_.update(event, dt, self._bullets_)
+    def update(self, events):
+        # Handle actions (shoot, change direction)
+        for event in events:
+            self._handle_event_(event)
 
-        self._bullets_.update(dt)
+        # Moving
+        self._players_.update(None, self._bullets_)
+        self._bullets_.update()
 
-    def check_collisions(self):
+        # Check collide
+        self._check_collisions()
+
+    def _check_collisions(self):
         players_hit = Group.groups_collide(self._players_, self._bullets_, False)
-        #print(players_hit)
         for player in players_hit:
             for bullet in players_hit[player]:
                 self._players_.reward_player(bullet.get_origin_id(), PLAYER_REWARD)
                 bullet.remove()
             player.hit(BULLET_DAMAGE)
 
+    def serialize(self):
+        result = {
+            'maze': self._maze_.serialize(),
+            'players': self._players_.serialize(),
+            'bullets': self._bullets_.serialize(),
+            'seed': self._seed_
+        }
+        return result
+
+    def _handle_event_(self, event):
+        self.HANDLERS_MAP[event['type']](event)
+
+    def _handle_join_game_(self, event):
+        self.add_player(Player(self._maze_, event['user_id'], self._players_, event['seed']))
+
+    def _handle_game_action_(self, event):
+        self._players_.update(event, self._bullets_)
+
+    def _handle_log_out_(self, event):
+        pass

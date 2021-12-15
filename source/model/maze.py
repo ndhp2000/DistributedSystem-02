@@ -1,5 +1,4 @@
 import random
-import time
 from io import StringIO
 
 from ..config import *
@@ -43,22 +42,23 @@ class Maze:
                            DIRECTION_UP: DIRECTION_DOWN, DIRECTION_DOWN: DIRECTION_UP}
     _CYCLE_RATIO_ = 1
 
-    def __init__(self, width=MAP_WIDTH, height=MAP_HEIGHT):
+    def __init__(self, random_seed, width=MAP_WIDTH, height=MAP_HEIGHT):
+        self._seed_ = random_seed
+        self._random_ = random.Random(random_seed)
         self._width_ = width
         self._height_ = height
-        self._adj_matrix_ = np.zeros((self._height_, self._width_, 5))  # HEIGHT x WIDTH x 4
+        self._adj_matrix_ = np.zeros((self._height_, self._width_, 4))  # HEIGHT x WIDTH x 4
         self._generate_()
 
     def _generate_(self):
-        random.seed(int(time.time()))
         dsu = DisjointSet()
         for x in range(self._height_):
             for y in range(self._width_):
                 dsu.set_root((x, y))
         # Create fully connected graph
         while dsu.size() > 1:
-            u = (random.randint(0, self._height_ - 1), random.randint(0, self._width_ - 1))
-            random_direction = random.randint(0, 3)
+            u = (self._random_.randint(0, self._height_ - 1), self._random_.randint(0, self._width_ - 1))
+            random_direction = self._random_.randint(0, 3)
             v = (u[0] + self.DELTA[random_direction][0], u[1] + self.DELTA[random_direction][1])
             if self.is_box_in_maze(u) and self.is_box_in_maze(v):
                 u_root = dsu.find_set(u)
@@ -70,8 +70,8 @@ class Maze:
 
         # Create some Cycle
         for i in range(int(self._height_ * self._width_ * self._CYCLE_RATIO_)):
-            u = (random.randint(0, self._height_ - 1), random.randint(0, self._width_ - 1))
-            random_direction = random.randint(0, 3)
+            u = (self._random_.randint(0, self._height_ - 1), self._random_.randint(0, self._width_ - 1))
+            random_direction = self._random_.randint(0, 3)
             v = (u[0] + self.DELTA[random_direction][0], u[1] + self.DELTA[random_direction][1])
             if self.is_box_in_maze(u) and self.is_box_in_maze(v):
                 self._adj_matrix_[u[0], u[1], random_direction] = 1
@@ -89,18 +89,12 @@ class Maze:
     def is_connected_to_direction(self, p, direction):
         return self._adj_matrix_[p[0], p[1], direction]
 
-    def is_cell_occupied(self, p, player_id):
-        if self._adj_matrix_[p[0], p[1], 4] == player_id:
-            return False
-        elif self._adj_matrix_[p[0], p[1], 4] == 0:
-            return False
-        return True
-
-    def set_cell_occupied(self, p, player_id):
-        self._adj_matrix_[p[0], p[1], 4] = player_id
-
-    def set_cell_free(self, p):
-        self._adj_matrix_[p[0], p[1], 4] = 0
+    def serialize(self):
+        return {
+            'seed': self._seed_,
+            'width': self._width_,
+            'height': self._height_
+        }
 
     def __str__(self):
         result = StringIO()

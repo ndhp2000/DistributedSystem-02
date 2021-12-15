@@ -47,24 +47,26 @@ class Group(AbstractGroup):
         for entity in self._removed_entities:
             del self._entities_dict[entity]
 
+    def serialize(self):
+        result = []
+        for entity in self._entities_dict:
+            result.append(entity.serialize())
+        return result
+
     @staticmethod
     def groups_collide(group1, group2, remove_entity_group2_on_hit=False) -> {}:
         collide_function = Entity.collide
         collided_entities = {}
-
         for entity1 in group1:
             for entity2 in group2:
                 is_collided = collide_function(entity1, entity2)
-
                 if is_collided:
                     if entity1 not in collided_entities:
                         collided_entities[entity1] = []
-
                     if remove_entity_group2_on_hit:
                         entity2.remove()
                     else:
                         collided_entities[entity1].append(entity2)
-
         return collided_entities
 
     @staticmethod
@@ -85,4 +87,3 @@ class PlayerGroup(Group):
             if player.get_id() == player_id:
                 player.reward(reward_amount)
                 break
-

@@ -14,8 +14,8 @@ class Receiver(threading.Thread):
         self._queue_ = Queue(0)  # already thread-safe
         self._shutdown_flag_ = threading.Event()
 
-    def receive(self):
-        return self._queue_.get(block=False, timeout=0.2)
+    def receive(self, is_block=False):
+        return self._queue_.get(block=is_block)
 
     def run(self):
         while not self._shutdown_flag_.is_set():

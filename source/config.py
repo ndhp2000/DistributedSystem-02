@@ -3,6 +3,10 @@ import numpy as np
 LOGGER = [("game-debug", "./logs"), ("game-view", "./logs"), ("game-controller", "./logs"),
           ("game-model", "./logs"),
           ("game-socket", "./logs")]
+
+PROCESSED_EVENTS_PER_LOOPS = 300
+MAX_PING = 4  # frames
+
 MAP_WIDTH = 32
 MAP_HEIGHT = 16
 WIN_WIDTH = 1024
@@ -12,23 +16,22 @@ CONSOLE_FONT_SIZE = 18
 
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 12345
-PROCESSED_EVENTS_PER_LOOPS = 10
 
 PLAYER = "human"
 MACHINE = "machine"
 ENEMY = "enemy"
 
 PLAYER_HP = 10
-PLAYER_MOVING_SPEED = 4
-PLAYER_RADIUS = 7
-PLAYER_MAZE_RADIUS = 0.5
+PLAYER_MOVING_SPEED = 1 / 16  # box per frame
+PLAYER_MAZE_RADIUS = 1 / 2  # box
 PLAYER_REWARD = 11
 
-COLLISION_RANGE = 0.25 # Maze distance
+FRAME_RATE_MS = int(1000 / 30)
 
-BULLET_MOVING_SPEED = 2 * PLAYER_MOVING_SPEED
-BULLET_MAZE_RADIUS = 0.2
-BULLET_RADIUS = 3
+COLLISION_RANGE = 0.25  # Maze distance
+
+BULLET_MOVING_SPEED = 4 * PLAYER_MOVING_SPEED
+BULLET_MAZE_RADIUS = 1 / 16 # box
 BULLET_DAMAGE = 5
 BULLET_COST = 1
 COOLDOWN_RANGE = 4
