@@ -21,17 +21,17 @@ class PlayerView(BaseView):
         super().__init__(r * 2, r * 2)
         self._screen_.fill(pygame.Color("black"))
         self._image = None
+        self._name_tag_font_ = pygame.font.SysFont('notomono', PLAYER_TAG_FONT_SIZE)
 
         self.get_sprite()
-        # pygame.draw.circle(self._screen_, color,
-        #                     (int(self._screen_.get_height() /2),
-        #                     int(self._screen_.get_width() /2)),
-        #                     r)
-
         self._image = pygame.transform.scale(self._image, (r * 2, r * 2))
         self._add_child(self._image,
                         (int(self._screen_.get_height() /2),
                         int(self._screen_.get_width() /2)))
+
+        text_location = self._player.get_position()
+        self._text_surface = self._name_tag_font_.render(f'P{self._player.get_id()}', True, (255, 255, 255))
+        self._add_child(self._text_surface, (text_location[0], text_location[1]))
 
     def get_sprite(self):
         direction = self._player.get_current_direction()

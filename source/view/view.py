@@ -33,9 +33,7 @@ class MainGameView:
         self._players_view_ = None
         self._bullets_view_ = None
 
-        self._cnt_ = 0
-
-    def update(self, player=None):
+    def update(self):
         # Update maze
         maze_screen_offset_y = self._MAZE_SCREEN_OFFSET_[0] * self._screen_.get_height()
         maze_screen_offset_x = self._MAZE_SCREEN_OFFSET_[1] * self._screen_.get_width()
@@ -45,8 +43,7 @@ class MainGameView:
         self._bullets_view_.draw(self._screen_)
 
         # Update Notification View
-        self._notification_screen_.print(str(self._cnt_))
-        self._cnt_ = 'None'
+        # self._notification_screen_.print()
         notification_screen_offset_y = self._NOTIFICATION_SCREEN_OFFSET_[0] * self._screen_.get_height()
         notification_screen_offset_x = self._NOTIFICATION_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._notification_screen_.add_to_parent(self._screen_,
