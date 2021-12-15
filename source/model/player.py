@@ -123,6 +123,9 @@ class Player(Entity):
     def get_player_type(self):
         return self._player_type
 
+    def get_current_direction(self):
+        return self._current_direction
+
     def update(self, event, dt, bullets_group):
         if event in PLAYER_MOVEMENT:
             self._set_next_direction(event)
