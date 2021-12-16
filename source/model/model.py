@@ -1,41 +1,39 @@
 from random import Random
 
 from source.config import *
+from source.model.bullet import Bullet
 from source.model.entity_group import Group, PlayerGroup
 from source.model.maze import Maze
 from source.model.player import Player
 
 
 class MainGameLogic:
-    def __init__(self, seed):
+    def __init__(self):
         self.HANDLERS_MAP = {
             '_JOIN_GAME_': self._handle_join_game_,
             '_GAME_ACTION_': self._handle_game_action_,
             '_LOG_OUT_': self._handle_log_out_,
         }
-
         self._maze_ = None
         self._players_ = PlayerGroup()
         self._bullets_ = Group()
-        self._seed_ = seed
-        self._random_ = Random(seed)
         self.flag = True
 
     def init_maze(self, maze_seed):
         self._maze_ = Maze(maze_seed)
 
-    def init_players(self, players=None):
-        pass
-        # new_position = np.array((self._random_.randint(0, self._maze_.get_width() - 1),
-        #                          self._random_.randint(0, self._maze_.get_height() - 1)), dtype='float64')
-        # self.add_player(
-        #     Player(new_position, self._maze_, 18120143, self._players_, 123))
-        #
-        # self.add_player(
-        #     Bot(new_position, self._maze_, 19201412, self._players_, 456))
+    def init_players(self, players):
+        for player in players:
+            self._players_.add(Player(self._maze_, player['id'], self._players_, player['seed'],
+                                      position=np.array(player['position']),
+                                      current_direction=player['current_direction'],
+                                      next_direction=player['next_direction'],
+                                      bullet_cooldown=player['bullet_cooldown']))
 
-    def init_bullets(self, bullets=None):
-        pass
+    def init_bullets(self, bullets):
+        for bullet in bullets:
+            self._bullets_.add(Bullet(self._bullets_, bullet['id'], bullet['player_id'], bullet['position'],
+                                      bullet['direction'], self._maze_))
 
     def get_maze(self):
         return self._maze_
@@ -74,7 +72,6 @@ class MainGameLogic:
             'maze': self._maze_.serialize(),
             'players': self._players_.serialize(),
             'bullets': self._bullets_.serialize(),
-            'seed': self._seed_
         }
         return result
 
@@ -88,4 +85,4 @@ class MainGameLogic:
         self._players_.update(event, self._bullets_)
 
     def _handle_log_out_(self, event):
-        pass
+        self._players_.remove_by_id(event['user_id'])
