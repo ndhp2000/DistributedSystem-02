@@ -1,5 +1,3 @@
-from random import Random
-
 from source.config import *
 from source.model.bullet import Bullet
 from source.model.entity_group import Group, PlayerGroup
@@ -17,7 +15,8 @@ class MainGameLogic:
         self._maze_ = None
         self._players_ = PlayerGroup()
         self._bullets_ = Group()
-        self.flag = True
+        self._pause_flag = False
+        self._debug_flag = False
 
     def init_maze(self, maze_seed):
         self._maze_ = Maze(maze_seed)
@@ -51,11 +50,9 @@ class MainGameLogic:
         # Handle actions (shoot, change direction)
         for event in events:
             self._handle_event_(event)
-
         # Moving
         self._players_.update(None, self._bullets_)
         self._bullets_.update()
-
         # Check collide
         self._check_collisions()
 

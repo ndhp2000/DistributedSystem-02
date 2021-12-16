@@ -91,6 +91,9 @@ class Player(Entity):
     def get_hp(self):
         return self._hp_
 
+    def get_current_direction(self):
+        return self._current_direction_
+
     def _shoot_(self, bullets_group):
         if self._bullet_cooldown_ == 0:
             Bullet(bullets_group, self._id_, self._id_, np.around(self._position_), self._current_direction_,

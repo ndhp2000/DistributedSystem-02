@@ -5,6 +5,7 @@ from source.view.base_view import BaseView
 
 
 class NotificationView(BaseView):
+    NAME_TAG_HEIGHT_RATIO = 1 / 5
     N_LOG_ROWS = 12
     COLUMNS_HEIGHT_RATIO = 1 / N_LOG_ROWS
     ROWS_PADDING_RATIO = 1 / 20
@@ -21,13 +22,16 @@ class NotificationView(BaseView):
         y = self._screen_.get_height() * (self.COLUMNS_HEIGHT_RATIO * row + self.COLUMNS_HEIGHT_RATIO / 2)
         self._add_child(text_surface, (x, y))
 
-    def print(self, text):
+    def print(self, text=None):
+        if text == 'None':
+            return
         self._text_list_.append(text)
         if len(self._text_list_) <= self.N_LOG_ROWS:
             self._print_row_(text, len(self._text_list_) - 1)
         else:
             self._text_list_ = self._text_list_[1:]
             self._clear_view()
+
             for row, text in enumerate(self._text_list_):
                 self._print_row_(text, row)
 

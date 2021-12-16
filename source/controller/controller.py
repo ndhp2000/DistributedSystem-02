@@ -35,6 +35,7 @@ class Controller:
         self._current_frame_ = initial_state['current_frame']
         self._time_elapsed_ = initial_state['time_elapsed']
         self._clock = pygame.time.Clock()
+        self._clock.tick()
         # Init Logic
         self._logic_ = MainGameLogic()
         self._logic_.init_maze(initial_state['state']['maze']['seed'])
@@ -63,6 +64,8 @@ class Controller:
             return RIGHT
         if key_pressed == pygame.K_SPACE:
             return SHOOT
+        if key_pressed == pygame.K_q:
+            return EXIT  # Pause game for now to debug, change to exit later
         return None
 
     def _event_generator_(self):  # Not used now
@@ -92,19 +95,20 @@ class Controller:
                 self._events_queue_.append(event)
         return True
 
-    def _update(self):
+    def _update(self, update_view=True):
         # Catch key event
         input_event = None
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                self._network.safety_closed()
-                exit()
-            if event.type == pygame.KEYDOWN:
-                if not self._is_bot_player:
-                    input_event = self._get_event_(event.key)
-        if self._is_bot_player:
-            input_event = self._event_generator_()
+        if update_view:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    self._network.safety_closed()
+                    exit()
+                if event.type == pygame.KEYDOWN:
+                    if not self._is_bot_player:
+                        input_event = self._get_event_(event.key)
+            if self._is_bot_player:
+                input_event = self._event_generator_()
 
         # Broadcast action
         if input_event:
@@ -128,7 +132,8 @@ class Controller:
 
         # Update with events
         self._logic_.update(processing_events)
-        self._view_.update()
+        if update_view:
+            self._view_.update()
 
     def loop(self):
         while True:
@@ -138,4 +143,4 @@ class Controller:
                 while self._time_elapsed_ >= FRAME_RATE_MS:
                     self._time_elapsed_ -= FRAME_RATE_MS
                     self._current_frame_ += 1
-                    self._update()
+                    self._update(update_view=self._time_elapsed_ < FRAME_RATE_MS)

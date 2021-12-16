@@ -15,6 +15,7 @@ WIN_WIDTH = 1024
 WIN_HEIGHT = 768
 NAME_TAG_FONT_SIZE = 32
 CONSOLE_FONT_SIZE = 18
+PLAYER_TAG_FONT_SIZE = 15
 
 # SERVER_IP = 'thevncore-lab.mooo.com'
 # SERVER_PORT = 20101
@@ -43,6 +44,7 @@ DOWN = -1
 LEFT = 2
 RIGHT = -2
 SHOOT = 3
+EXIT = 4
 
 DIRECTIONS = {
     UP: np.array([0, -1]),
