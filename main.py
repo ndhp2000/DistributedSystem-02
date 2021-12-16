@@ -8,5 +8,5 @@ GameLog.load_config()
 if __name__ == "__main__":
     logger = logging.getLogger("game-debug")
     logger.info("Hello-World")
-    controller = Controller(is_auto_play=True)
+    controller = Controller(is_auto_play=False)
     controller.loop()
