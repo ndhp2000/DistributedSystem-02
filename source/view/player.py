@@ -14,7 +14,7 @@ class PlayerView(BaseView):
         r = self._player.get_maze_radius() * (WIN_WIDTH / MAP_WIDTH) * 0.5
         color = pygame.Color("red")
         super().__init__(r * 2, r * 2)
-        self._screen_.fill(pygame.Color("black"))
+        self._screen_.fill(pygame.Color("white"))
         pygame.draw.circle(self._screen_, color,
                            (int(self._screen_.get_height() / 2),
                             int(self._screen_.get_width() / 2)),

@@ -75,7 +75,7 @@ class Controller:
             self._counter = self.COOLDOWN_COMMAND
             rand_num = random.randint(-N_TYPE_COMMANDS, N_TYPE_COMMANDS - 1)  # TODO UPDATE FOR BACKEND
             if rand_num < 0:
-                return SHOOT
+                return None
             else:
                 return list(PLAYER_MOVEMENT.keys())[rand_num - 1]
         return None

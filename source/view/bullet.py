@@ -15,7 +15,7 @@ class BulletView(BaseView):
 
         super().__init__(r * 2, r * 2)
 
-        self._screen_.fill(pygame.Color("black"))
+        self._screen_.fill(pygame.Color("white"))
         pygame.draw.circle(self._screen_, pygame.Color("orange"),
                            (int(self._screen_.get_width() / 2),
                             int(self._screen_.get_height() / 2)),
