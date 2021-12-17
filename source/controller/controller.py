@@ -12,9 +12,12 @@ from ..view.view import MainGameView
 
 
 class Controller:
-    COOLDOWN_COMMAND = 30
+    COOLDOWN_COMMAND = 5
 
-    def __init__(self, is_auto_play=False):
+    def __init__(self, is_auto_play=False, log_file_debug="a.txt"):
+        # TODO - DELETE
+        self.debug_file = open(log_file_debug, "w")
+
         self._is_bot_player = is_auto_play
         self._counter = self.COOLDOWN_COMMAND
         self._events_queue_ = deque()
@@ -32,8 +35,8 @@ class Controller:
         self._events_queue_.clear()
         # Get state form server
         initial_state = self._network.get_game_state(self._instance_id_, self._user_id_)
-        self._current_frame_ = initial_state['current_frame']
-        self._time_elapsed_ = initial_state['time_elapsed']
+        self._current_frame_ = initial_state['current_frame'] - 1
+        self._time_elapsed_ = initial_state['time_elapsed'] + FRAME_RATE_MS
         self._clock = pygame.time.Clock()
         self._clock.tick()
         # Init Logic
@@ -78,7 +81,7 @@ class Controller:
             self._counter = self.COOLDOWN_COMMAND
             rand_num = random.randint(-N_TYPE_COMMANDS, N_TYPE_COMMANDS - 1)  # TODO UPDATE FOR BACKEND
             if rand_num < 0:
-                return None
+                return SHOOT
             else:
                 return list(PLAYER_MOVEMENT.keys())[rand_num - 1]
         return None
@@ -102,6 +105,7 @@ class Controller:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
+                    self.debug_file.close()
                     self._network.safety_closed()
                     exit()
                 if event.type == pygame.KEYDOWN:
@@ -116,9 +120,10 @@ class Controller:
 
         # Get events from server to update
         events = self._network.receive(PROCESSED_EVENTS_PER_LOOPS)
-
         # Check if events is out of date and add to queue
+
         if not self._enqueue_valid_events_(events):
+            self.debug_file.write("RESET\n")
             self._reset_state_()
             return
 
@@ -134,6 +139,7 @@ class Controller:
         self._logic_.update(processing_events)
         if update_view:
             self._view_.update()
+        self.debug_file.write(str(self._current_frame_) + " : " + str(self._logic_.serialize()) + "\n")
 
     def loop(self):
         while True:

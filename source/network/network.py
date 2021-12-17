@@ -49,8 +49,10 @@ class GameNetwork:
         self.send(sent_packet)
         # Block until receive
         print("Please wait to log in...")
-        received_packet = self.receive(1, is_block=True)
-        print(received_packet)
+        while True:
+            received_packet = self.receive(1, is_block=True)
+            if received_packet[0]['type'] == '_JOIN_GAME_FIRST_':
+                break
         return received_packet[0]['instance_id'], received_packet[0]['user_id']
 
     def get_game_state(self, instance_id, user_id):
@@ -58,7 +60,10 @@ class GameNetwork:
         self.send(sent_packet)
         # Block until receive
         print("Please wait to load game state")
-        received_packet = self.receive(1, is_block=True)
+        while True:
+            received_packet = self.receive(1, is_block=True)
+            if received_packet[0]['type'] == '_GET_STATE_':
+                break
         return received_packet[0]
 
     def send_action(self, instance_id, user_id, event_key):
