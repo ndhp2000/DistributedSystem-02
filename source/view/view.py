@@ -8,7 +8,7 @@ from source.view.player import PlayerView
 from source.view.scoreboard import ScoreboardView
 from source.view.utils import convert_maze_to_world_pos
 from source.model.entity_group import Group
-from source.view.view_group import ViewGroup
+from source.view.view_group import ViewGroup, AdvancedViewGroup
 
 
 class MainGameView:
@@ -32,6 +32,7 @@ class MainGameView:
 
         self._players_view_ = None
         self._bullets_view_ = None
+        self._players_name_tag_ = None
 
     def update(self):
         # Update maze
@@ -66,8 +67,10 @@ class MainGameView:
         self._maze_screen_.add_to_parent(self._screen_, (maze_screen_offset_y, maze_screen_offset_x))
 
     def init_players(self, players_group=None):
-        self._players_view_ = ViewGroup(players_group, PlayerView)
-        self._players_view_.draw(self._screen_)
+        self._players_view_ = AdvancedViewGroup(players_group, PlayerView)
+        #self._players_view_.draw(self._screen_)
+
+        # self._players_name_tag_ = ViewGroup()
 
     def init_bullets(self, bullets_group):
         self._bullets_view_ = ViewGroup(bullets_group, BulletView)
