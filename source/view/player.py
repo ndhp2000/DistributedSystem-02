@@ -12,15 +12,15 @@ class PlayerView(BaseView):
         self._player = player
         self.name = "Player"
 
-        r = self._player.get_radius()
+        self.r = self._player.get_radius()
 
-        super().__init__(r * 2, r * 2)
+        super().__init__(self.r * 2, self.r * 2)
         self._screen_.fill(pygame.Color("black"))
         self._image = None
         self._name_tag_font_ = pygame.font.SysFont('notomono', PLAYER_TAG_FONT_SIZE)
 
         self.get_sprite()
-        self._image = pygame.transform.scale(self._image, (r * 2, r * 2))
+        self._image = pygame.transform.scale(self._image, (self.r * 2, self.r * 2))
         self._add_child(self._image,
                         (int(self._screen_.get_height() /2),
                         int(self._screen_.get_width() /2)))
@@ -51,3 +51,10 @@ class PlayerView(BaseView):
         world_position = convert_maze_to_world_pos(position[0], position[1])
         return world_position
 
+    def add_to_parent(self, parent: pygame.Surface, location=None, is_centered=None):
+        self.get_sprite()
+        self._image = pygame.transform.scale(self._image, (self.r * 2, self.r * 2))
+        self._add_child(self._image,
+                        (int(self._screen_.get_height() / 2),
+                         int(self._screen_.get_width() / 2)))
+        super().add_to_parent(parent, location, is_centered=True)
