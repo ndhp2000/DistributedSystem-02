@@ -11,6 +11,10 @@ from ..network.network import GameNetwork
 from ..view.view import MainGameView
 
 
+class ServerIsOverload(Exception):
+    pass
+
+
 class Controller:
     COOLDOWN_COMMAND = 5
 
@@ -25,6 +29,9 @@ class Controller:
         # Init Network
         self._network = GameNetwork()
         self._instance_id_, self._user_id_ = self._network.join_game()  # Sign-in to server.
+        if self._instance_id_ is None:
+            self._network.safety_closed()
+            raise ServerIsOverload
 
         # Init state
         self._time_elapsed_ = 0
