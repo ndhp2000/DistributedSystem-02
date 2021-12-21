@@ -8,11 +8,15 @@ from source.view.spritesheet import SpriteSheet
 
 
 class PlayerView(BaseView):
+    TILE_WIDTH = 32
+    TILE_HEIGHT = 32
+
     def __init__(self, player):
         self._player = player
         self.name = "Player"
 
         self.r = self._player.get_radius()
+        print(self.r)
 
         super().__init__(self.r * 2, self.r * 2)
         self._screen_.fill(pygame.Color("black"))
@@ -21,6 +25,7 @@ class PlayerView(BaseView):
 
         self.get_sprite()
         self._image = pygame.transform.scale(self._image, (self.r * 2, self.r * 2))
+
         self._add_child(self._image,
                         (int(self._screen_.get_height() /2),
                         int(self._screen_.get_width() /2)))
@@ -33,18 +38,22 @@ class PlayerView(BaseView):
         direction = self._player.get_current_direction()
         x = 0
         if self._player.is_main_player():
-            x = 2
+            x = 1 * self.TILE_WIDTH
         else:
             x = 0
 
+        dim = (self.TILE_WIDTH, self.TILE_HEIGHT)
+
         if direction == UP:
-            self._image = SpriteSheet.image_at(x, 4, -1)
+            anchor = (x, 2 * self.TILE_HEIGHT)
         elif direction == DOWN:
-            self._image = SpriteSheet.image_at(x, 6, -1)
+            anchor = (x, 3 * self.TILE_HEIGHT)
         elif direction == LEFT:
-            self._image = SpriteSheet.image_at(x, 8, -1)
+            anchor = (x, 4 * self.TILE_HEIGHT)
         elif direction == RIGHT:
-            self._image = SpriteSheet.image_at(x, 10, -1)
+            anchor = (x, 5 * self.TILE_HEIGHT)
+
+        self._image = SpriteSheet.image_at(anchor, dim, 'PLAYER', -1)
 
     def get_world_position(self):
         position = self._player.get_position()

@@ -68,9 +68,6 @@ class MainGameView:
 
     def init_players(self, players_group=None):
         self._players_view_ = PlayerViewGroup(players_group, PlayerView)
-        #self._players_view_.draw(self._screen_)
-
-        # self._players_name_tag_ = ViewGroup()
 
     def init_bullets(self, bullets_group):
         self._bullets_view_ = ViewGroup(bullets_group, BulletView)

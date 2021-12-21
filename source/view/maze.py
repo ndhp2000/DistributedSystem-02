@@ -1,22 +1,33 @@
 import pygame
 
 from .base_view import BaseView
+from .spritesheet import SpriteSheet
 from ..assets import MazeViewAsset
 from ..model.maze import Maze
+from ..config import *
 
 
 class MazeView(BaseView):
+    BACKGROUND_SIZE = (640, 640)
+
     def __init__(self, maze: Maze, screen_height, screen_width):
         super().__init__(screen_height, screen_width)
         self._maze_ = maze
         self._box_length_ = int(self._screen_.get_height() / self._maze_.get_height())
+        self._background_ratio = self.BACKGROUND_SIZE[0] / self._screen_.get_width()
+
+        self._vertical_line = pygame.image.load(MazeViewAsset.vertical_line).convert()
+        self._horizontal_line = pygame.image.load(MazeViewAsset.horizontal_line).convert()
+        self._background = SpriteSheet.image_at((0, 0), (640, 640 * self._background_ratio), 'MAZE_BACKGROUND')
         self._draw_maze_()
 
     def _draw_maze_(self):
-        vertical_line = pygame.image.load(MazeViewAsset.vertical_line).convert()
-        horizontal_line = pygame.image.load(MazeViewAsset.horizontal_line).convert()
-        vertical_line = pygame.transform.scale(vertical_line, (vertical_line.get_width(), self._box_length_))
-        horizontal_line = pygame.transform.scale(horizontal_line, (self._box_length_, horizontal_line.get_height()))
+        background = pygame.transform.scale(self._background, (self._screen_.get_width(), self._screen_.get_height()))
+        vertical_line = pygame.transform.scale(self._vertical_line, (self._vertical_line.get_width(), self._box_length_))
+        horizontal_line = pygame.transform.scale(self._horizontal_line, (self._box_length_, self._horizontal_line.get_height()))
+        print(self._screen_.get_width())
+        print(self._screen_.get_height())
+        #self._add_child(background, (512, 256))
 
         y = 0
         for x in range(self._maze_.get_width()):

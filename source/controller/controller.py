@@ -8,6 +8,7 @@ from source.config import *
 from ..model.model import MainGameLogic
 from ..network.network import GameNetwork
 from ..view.view import MainGameView
+from ..view.menu import Menu
 
 
 class Controller:
@@ -17,6 +18,8 @@ class Controller:
         self._clock = pygame.time.Clock()
         self._is_bot_player = is_auto_play
         self._counter = self.COOLDOWN_COMMAND
+
+        pygame.init()
 
         # Init Logic
         self._logic_ = MainGameLogic()
@@ -31,6 +34,9 @@ class Controller:
         self._view_.init_notification()
         self._view_.init_players(self._logic_.get_players())
         self._view_.init_bullets(self._logic_.get_bullets())
+
+        # Init menu
+        self._menu = Menu()
 
         # Init Network
         # self._network = GameNetwork()
@@ -65,6 +71,20 @@ class Controller:
             else:
                 return list(PLAYER_MOVEMENT.keys())[rand_num - 1]
         return None
+
+    def menu(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
+                    self._menu.handle_event(event)
+
+            self._menu.draw()
+
+            if not self._menu.is_active():
+                break
 
     def loop(self):
         while True:

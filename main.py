@@ -9,4 +9,5 @@ if __name__ == "__main__":
     logger = logging.getLogger("game-debug")
     logger.info("Hello-World")
     controller = Controller()
+    controller.menu()
     controller.loop()
