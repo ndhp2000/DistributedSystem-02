@@ -8,218 +8,145 @@ from source.model.utils import convert_player_direction_to_maze_direction
 
 
 class Player(Entity):
-    def __init__(self, position, maze: Maze, player_id, players_group=None, player_type=ENEMY):
-        super().__init__(PLAYER_RADIUS, PLAYER_MAZE_RADIUS, position, PLAYER_MOVING_SPEED, None)
+    def __init__(self, maze: Maze, player_id, players_group, seed, position=None, current_direction=None,
+                 next_direction=None, bullet_cooldown=0, player_hp=PLAYER_HP, bullet_counter=0, dead_counter=0):
+        super().__init__(player_id, PLAYER_MAZE_RADIUS, position, PLAYER_MOVING_SPEED, players_group)
         self._maze_ = maze
-        self._id = player_id
-        self._hp = PLAYER_HP
-        self._previous_anchor = position.copy()
-        self._next_anchor = None
-        self._current_direction = None
-        self._recent_running_bullet = None
-        self._player_type = player_type
-        self._group = players_group
+        self._hp_ = player_hp
+        self._bullet_cooldown_ = bullet_cooldown
+        self._seed_ = seed
+        self._random_ = random.Random(seed)
+        self._current_direction_ = current_direction
+        self._next_direction_ = next_direction
+        self._bullet_counter_ = bullet_counter
+        self._dead_counter_ = dead_counter
+        for i in range(self._dead_counter_):  # Refresh the random seed
+            x = self._random_.randint(0, MAP_WIDTH - 1)
+            y = self._random_.randint(0, MAP_HEIGHT - 1)
 
-        for direction in DIRECTIONS:
-            if self._get_next_anchor(position, direction) is not None:
-                #print(self._get_next_anchor(position, direction))
-                self._next_anchor = self._get_next_anchor(position, direction)
-                self._current_direction = direction
-                break
+        if self._position_ is None:
+            self._rand_position_and_direction()
+            self._next_direction_ = None
+        self._future_position_ = None
 
-        self._next_direction = None
-        #print(self._current_direction, self._next_direction, self._previous_anchor, self._next_anchor)
+        self.synchronize()
 
-    def _remove(self):
-        if self._group is not None:
-            self._group.remove(self)
-
-        self._is_removed = True
-
-    def _set_next_direction(self, input_direction):
-        self._next_direction = input_direction
-
-    def _meet_next_anchor(self):
-        if self._next_anchor is not None and self._previous_anchor is not None:
-            distance_between_anchors = np.sum(np.abs(self._next_anchor - self._previous_anchor))
-            distance_to_position = np.sum(np.abs(self._position - self._previous_anchor))
-            # print("distance = ", distance_to_position)
-            return distance_to_position >= distance_between_anchors
-        return False
-
-    def _move(self, dt):
-        # print("CALL UPDATE")
-        self._position += DIRECTIONS[self._current_direction] * self._speed * dt
-
-        if self._next_anchor is not None and self._maze_.is_cell_occupied((round(self._position[1] + COLLISION_RANGE), round(self._position[0] + COLLISION_RANGE)), self._id):
-            self._next_anchor = self._previous_anchor.copy()
-            self._position = self._previous_anchor.copy()
-            self._next_direction = None
-            self._current_direction *= -1
-            return
-
-        if self._meet_next_anchor():
-            self._maze_.set_cell_free((round(self._previous_anchor[1]), round(self._previous_anchor[0])))
-
-            # print("MEET AN ANCHOR")
-            # print('Position: ', self._position)
-            # print('Direction: ', self._current_direction, self._next_direction)
-            # print('Anchor: ', self._previous_anchor, self._next_anchor)
-            self._position = self._next_anchor.copy()  # TODO: Add delta
-            if self._next_direction and self._is_valid_direction(self._next_direction):
-                # print("CHANGE DIRECTION FOR INPUT")
-                # Check new input direction
-                self._previous_anchor = self._next_anchor
-                self._next_anchor = self._get_next_anchor(self._previous_anchor, self._next_direction)
-                self._current_direction = self._next_direction
-            elif self._is_valid_direction(self._current_direction):  # Use current - direction
-                # print("MOVE SAME DIRECTION")
-                self._previous_anchor = self._next_anchor
-                self._next_anchor = self._get_next_anchor(self._previous_anchor, self._current_direction)
-
-            self._next_direction = None
-            self._maze_.set_cell_occupied((round(self._position[1]), round(self._position[0])), self._id)
-            return
-
-            #print('Cell occupied: ', self._position)
-        if self._next_direction == -self._current_direction:
-            # print("MOVE REVERSE DIRECTION")
-            # print('Position: ', self._position)
-            # print('Direction: ', self._current_direction, self._next_direction)
-            # print('Anchor: ', self._previous_anchor, self._next_anchor)
-            self._reverse_direction()
-            self._next_direction = None
-            # print('Position: ', self._position)
-            # print('Direction: ', self._current_direction, self._next_direction)
-            # print('Anchor: ', self._previous_anchor, self._next_anchor)
+    def _meet_middle_box(self):
+        return int(self._position_[0]) == self._position_[0] and self._position_[1] == int(self._position_[1])
 
     def _reverse_direction(self):
-        self._current_direction = self._current_direction * -1
-        self._previous_anchor, self._next_anchor = self._next_anchor, self._previous_anchor
+        self._current_direction_ = self._current_direction_ * -1
 
     def _is_valid_direction(self, player_direction):
         maze_direction = convert_player_direction_to_maze_direction(player_direction)
-        return self._maze_.is_connected_to_direction((int(self._position[1]), int(self._position[0])), maze_direction)
+        return self._maze_.is_connected_to_direction((int(self._position_[1]), int(self._position_[0])), maze_direction)
 
-    def _get_next_anchor(self, pos, player_direction):
+    def _get_next_valid_cell(self, position, player_direction):
         direction = convert_player_direction_to_maze_direction(player_direction)
-        if self._maze_.is_connected_to_direction((int(pos[1]), int(pos[0])), direction):
-            return np.array([pos[0] + Maze.DELTA[direction][1], pos[1] + Maze.DELTA[direction][0]])
+        if self._maze_.is_connected_to_direction((int(position[1]), int(position[0])), direction):
+            return np.array([position[0] + Maze.DELTA[direction][1], position[1] + Maze.DELTA[direction][0]])
         else:
             return None
 
-    def set_position(self, pos):
-        self._position = pos.copy()
+    def _check_collide_with_other_players(self, guess_future=True):
+        result = False
+        for other_player in self._group_:
+            if other_player.get_id != self._id_:
+                if Entity.collide(self, other_player, guess_future):
+                    result = True
+                if result:
+                    return result
+        return result
+
+    def _move(self):
+        if (not self._meet_middle_box() or self._is_valid_direction(
+                self._current_direction_)) and not self._check_collide_with_other_players():
+            self._position_ += DIRECTIONS[self._current_direction_] * self._speed_  # move
+
+        if self._next_direction_ == -self._current_direction_:  # reverse turn
+            self._reverse_direction()
+            self._next_direction_ = None
+            return
+
+        if self._meet_middle_box():
+            if self._next_direction_ and self._is_valid_direction(self._next_direction_):  # next turn is valid
+                self._current_direction_ = self._next_direction_
+            self._next_direction_ = None
+
+    def update(self, event, bullets_group):
+        self._bullet_cooldown_ = max(0, self._bullet_cooldown_ - 1)
+        if event:
+            if event['user_id'] == self._id_:  # Run event with suitable ID.
+                if event['action'] in PLAYER_MOVEMENT:
+                    self._next_direction_ = event['action']
+                elif event['action'] in PLAYER_SHOOT:
+                    self._shoot_(bullets_group)
+        else:
+            self._move()
+
+    def synchronize(self):
+        self._future_position_ = self._position_.copy()
+        if not self._meet_middle_box() or self._is_valid_direction(self._current_direction_):
+            self._future_position_ += DIRECTIONS[self._current_direction_] * self._speed_
+
+    def get_future_position(self):
+        return self._future_position_.copy()
 
     def get_origin_id(self):
-        return self._id
-
-    def get_id(self):
-        return self._id
+        return self._id_
 
     def get_hp(self):
-        return self._hp
-
-    def get_player_type(self):
-        return self._player_type
+        return self._hp_
 
     def get_current_direction(self):
-        return self._current_direction
+        return self._current_direction_
 
-    def update(self, event, dt, bullets_group):
-        if event in PLAYER_MOVEMENT:
-            self._set_next_direction(event)
-        elif event in PLAYER_SHOOT:
-            self.shoot(bullets_group)
-        self._move(dt)
-
-    def _get_bullet_target(self):
-        target_cell_pos = np.array([int(self._position[0]), int(self._position[1])])
-
-        maze_direction = convert_player_direction_to_maze_direction(self._current_direction)
-        while self._maze_.is_connected_to_direction((target_cell_pos[1], target_cell_pos[0]), maze_direction):
-            target_cell_pos += DIRECTIONS[self._current_direction]
-
-        if np.array_equal(target_cell_pos, self._position):
-            return None
-        return target_cell_pos
-
-    def is_main_player(self):
-        if self._player_type == PLAYER:
-            return True
-        else:
-            return False
-
-    def shoot(self, bullets_group):
-        #print(self._recent_running_bullet)
-        if self._recent_running_bullet is None or self._recent_running_bullet.is_out_of_range():
-            target = self._get_bullet_target()
-            if target is None:
-                return
-
-            # print('SHOOT')
-            # print(len(bullets_group))
-            # print(self._id)
-            # print('\n')
-            bullet = Bullet(bullets_group, 0, self._id, self._position, target, self._current_direction)
-            self._recent_running_bullet = bullet
-
-        self._hp -= BULLET_COST
+    def _shoot_(self, bullets_group):
+        if self._bullet_cooldown_ == 0:
+            Bullet(bullets_group, (self._id_, self._bullet_counter_), self._id_, np.around(self._position_),
+                   self._current_direction_,
+                   self._maze_)
+            self._bullet_counter_ += 1
+            self._bullet_cooldown_ = 4 / BULLET_MOVING_SPEED
+        self._hp_ -= BULLET_COST
 
     def hit(self, damage):
-        self._hp -= damage
-        #print('Player' + str(self._id), 'hit!! HP: ', self._hp)
-        self.rand_position_and_direction()
+        self._hp_ -= damage
+        self._rand_position_and_direction()
 
-    def rand_position_and_direction(self):
-        self._next_direction = None
-
+    def _rand_position_and_direction(self):
+        self._dead_counter_ += 1
+        self._next_direction_ = None
         while True:
-            x = random.randint(0, MAP_WIDTH - 1)
-            y = random.randint(0, MAP_HEIGHT - 1)
-
-            if not self._maze_.is_cell_occupied((y, x), self._id):
-                for direction in DIRECTIONS:
-                    if self._get_next_anchor((x, y), direction) is not None:
-                        print("New position: ", self._get_next_anchor((x, y), direction))
-
-                        self._maze_.set_cell_free((round(self._position[1] - COLLISION_RANGE), round(self._position[0] - COLLISION_RANGE)))
-                        self._maze_.set_cell_free((round(self._position[1] + COLLISION_RANGE), round(self._position[0] + COLLISION_RANGE)))
-
-                        self._position = np.array([x, y], dtype='float64')
-                        self._maze_.set_cell_occupied((round(self._position[1]), round(self._position[0])), self._id)
-
-                        self._next_anchor = self._get_next_anchor(self._position, direction)
-                        self._current_direction = direction
-                        return
+            x = self._random_.randint(0, MAP_WIDTH - 1)
+            y = self._random_.randint(0, MAP_HEIGHT - 1)
+            self._position_ = np.array((x, y), dtype='float64')
+            if not self._check_collide_with_other_players(guess_future=False):
+                for direction in sorted(DIRECTIONS.keys()):
+                    if self._get_next_valid_cell(self._position_, direction) is not None:
+                        self._current_direction_ = direction
+                        break
+                break
 
     def reward(self, hp):
-        self._hp += hp
-        print('Player' + str(self._id), 'reward!! HP: ', self._hp)
+        self._hp_ += hp
 
+    def serialize(self):
+        return {
+            'id': self._id_,
+            'hp': self._hp_,
+            'position': [self._position_[0], self._position_[1]],
+            'current_direction': self._current_direction_,
+            'next_direction': self._next_direction_,
+            'seed': self._seed_,
+            'bullet_cooldown': self._bullet_cooldown_,
+            'bullet_counter': self._bullet_counter_,
+            'dead_counter': self._dead_counter_
+        }
 
-class Bot(Player):
-    COOLDOWN_COMMAND = 10
+    @staticmethod
+    def get_player_type():
+        return 'human'
 
-    def __init__(self, position, maze: Maze, player_id):
-        super().__init__(position, maze, player_id, player_type=MACHINE)
-        self._counter = self.COOLDOWN_COMMAND
-
-    def update(self, event, dt, bullets_group):  # Upgrade later
-        event = self.create_command()
-        if event in PLAYER_MOVEMENT:
-            self._set_next_direction(event)
-        elif event in PLAYER_SHOOT:
-            self.shoot(bullets_group)
-        self._move(dt)
-
-    def create_command(self):
-        self._counter -= 1
-        if self._counter == 0:
-            self._counter = self.COOLDOWN_COMMAND
-            rand_num = random.randint(-N_TYPE_COMMANDS, N_TYPE_COMMANDS - 1)  # TODO UPDATE FOR BACKEND
-            if rand_num < 0:
-                return SHOOT
-            else:
-                return list(PLAYER_MOVEMENT.keys())[rand_num - 1]
-        return None
+    def __lt__(self, other):
+        return self.get_id() < other.get_id()

@@ -33,10 +33,10 @@ class SpriteSheet:
         image = pygame.Surface(rect.size)
         image.set_colorkey(0)
         image.blit(SpriteSheet._sheets[sheet_name].get_sheet(), (0, 0), rect)
+
         if colorkey is not None:
             if colorkey is -1:
                 colorkey = image.get_at((0, 0))
             image.set_colorkey(colorkey, pygame.RLEACCEL)
 
         return image
-

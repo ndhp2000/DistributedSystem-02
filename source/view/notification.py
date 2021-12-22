@@ -25,7 +25,6 @@ class NotificationView(BaseView):
     def print(self, text=None):
         if text == 'None':
             return
-
         self._text_list_.append(text)
         if len(self._text_list_) <= self.N_LOG_ROWS:
             self._print_row_(text, len(self._text_list_) - 1)
@@ -35,7 +34,6 @@ class NotificationView(BaseView):
 
             for row, text in enumerate(self._text_list_):
                 self._print_row_(text, row)
-
 
     def _unit_test_(self):
         for i in range(15):

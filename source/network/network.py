@@ -47,15 +47,28 @@ class GameNetwork:
     def join_game(self):
         sent_packet = {'type': '_JOIN_GAME_'}
         self.send(sent_packet)
-        result = []
         # Block until receive
         print("Please wait to log in...")
-        while len(result) == 0:
-            result.extend(self.receive(1))
-            if len(result) == 0:
-                time.sleep(0.5)
-        received_packet = result[0]
-        return received_packet['instance_id']
+        while True:
+            received_packet = self.receive(1, is_block=True)
+            if received_packet[0]['type'] == '_JOIN_GAME_FIRST_':
+                break
+        return received_packet[0]['instance_id'], received_packet[0]['user_id']
+
+    def get_game_state(self, instance_id, user_id):
+        sent_packet = {'type': '_GET_STATE_', 'instance_id': instance_id, 'user_id': user_id}
+        self.send(sent_packet)
+        # Block until receive
+        print("Please wait to load game state")
+        while True:
+            received_packet = self.receive(1, is_block=True)
+            if received_packet[0]['type'] == '_GET_STATE_':
+                break
+        return received_packet[0]
+
+    def send_action(self, instance_id, user_id, event_key):
+        sent_packet = {'type': '_GAME_ACTION_', 'instance_id': instance_id, 'user_id': user_id, 'action': event_key}
+        self.send(sent_packet)
 
     def send(self, packet):
         packet = {
@@ -64,11 +77,11 @@ class GameNetwork:
         }
         self._sender_.send(packet)
 
-    def receive(self, max_nums_packets: int):
+    def receive(self, max_nums_packets: int, is_block=False):
         result = []
         for i in range(max_nums_packets):
             try:
-                packet = self._receiver_.receive()
+                packet = self._receiver_.receive(is_block)
                 result.append(packet['game'])
             except Empty:
                 return result
