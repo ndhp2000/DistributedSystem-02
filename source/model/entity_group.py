@@ -33,6 +33,9 @@ class AbstractGroup:
     def get_removed_entities(self):
         return self._removed_entities
 
+    def get_index_entities(self):
+        return self._index_entities
+
     def __len__(self):
         return len(self._entities_dict)
 
@@ -48,8 +51,6 @@ class Group(AbstractGroup):
         super().add(entity)
 
     def update(self, *args, **kwargs):
-        self.clean()
-
         for entity in self._entities_dict:
             if self.has(entity):
                 entity.update(*args, **kwargs)
@@ -59,7 +60,9 @@ class Group(AbstractGroup):
 
         for entity in self._removed_entities:
             del self._entities_dict[entity]
-        self._removed_entities = []
+            del self._index_entities[entity.get_id()]
+
+        self.clean()
 
     def serialize(self):
         result = []

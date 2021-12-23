@@ -17,6 +17,8 @@ class ViewGroup:
 
 
 class PlayerViewGroup(ViewGroup):
+    NAME_TAG_OFFSET = (-5, 10)
+
     def __init__(self, model_group, view_class_init_function=PlayerView):
         super().__init__(model_group, view_class_init_function)
 
@@ -30,13 +32,21 @@ class PlayerViewGroup(ViewGroup):
             self._name_tags[entity.get_id()] = self._name_tag_font_.render(f'P{entity.get_id()}', True, (255, 255, 255))
 
     def draw(self, screen):
-        lost_entities = self._model_group.get_removed_entities()
-        if len(lost_entities) != 0:
-            for entity in lost_entities:
-                del self._view_entities[entity.get_id()]
-                del self._name_tags[entity.get_id()]
+        #lost_entities = self._model_group.get_removed_entities()
+        index_entities_group = self._model_group.get_index_entities()
+        print(len(self._view_entities), len(self._model_group), len(index_entities_group))
+        if len(self._model_group) < len(self._view_entities):
+            print('True smaller')
+            removed_view_entities = []
+            for entity_id in self._view_entities:
+                if entity_id not in index_entities_group:
+                    removed_view_entities.append(entity_id)
+
+            for entity_id in removed_view_entities:
+                del self._view_entities[entity_id]
 
         if len(self._model_group) > len(self._view_entities):
+            print('True larger')
             self._view_entities = {}
             for entity in self._model_group:
                 self._view_entities[entity.get_id()] = self._view_class_init_function(entity)
@@ -49,4 +59,4 @@ class PlayerViewGroup(ViewGroup):
 
             name_tag = self._name_tags[entity_id]
             position = view_entity.get_world_position()
-            screen.blit(name_tag, (position[0] - 5, position[1] + 10))
+            screen.blit(name_tag, (position[0] + self.NAME_TAG_OFFSET[0], position[1] + self.NAME_TAG_OFFSET[1]))
