@@ -19,6 +19,11 @@ class Menu:
 
     def __init__(self):
         super().__init__()
+
+        self._screen_display_ = pygame.display
+        self._screen_display_.set_caption('Zace Maze')
+        self._screen_ = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), 0, 32)
+
         self._input_box = InputBox(self.INPUT_BOX_OFFSET, self.INPUT_BOX_DIM)
         self._play_button = SpriteSheet.image_at((0, 0), (600, 200), 'MENU')
         # self._auto_play_button = pygame
@@ -31,10 +36,6 @@ class Menu:
         self._play_button = pygame.transform.scale(self._play_button, self.PLAY_BUTTON_DIM)
         self._exit_button = pygame.transform.scale(self._exit_button, self.EXIT_BUTTON_DIM)
         self._background = pygame.transform.scale(self._background, (WIN_WIDTH, WIN_HEIGHT))
-
-        self._screen_display_ = pygame.display
-        self._screen_display_.set_caption('Zace Maze')
-        self._screen_ = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), 0, 32)
 
         self._menu_active = True
 
