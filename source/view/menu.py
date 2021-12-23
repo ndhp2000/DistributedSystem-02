@@ -1,7 +1,7 @@
 import pygame
 from pygame.constants import *
 
-from source.assets import MenuViewAsset
+from source.utils.assets import MenuViewAsset
 from source.config import *
 from source.utils.sound import GameSound
 from source.view.button import Button

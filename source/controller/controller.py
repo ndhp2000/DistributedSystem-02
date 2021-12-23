@@ -8,6 +8,7 @@ from pygame.locals import *
 from source.config import *
 from ..model.model import MainGameLogic
 from ..network.network import GameNetwork
+from ..utils.sound import GameSound
 from ..view.view import MainGameView
 
 
@@ -146,6 +147,7 @@ class Controller:
         self.debug_file.write(str(self._current_frame_) + " : " + str(self._logic_.serialize()) + "\n")
 
     def loop(self):
+        GameSound.gameplay_music.play(-1)
         while not self._exit_flag:
             dt = self._clock.tick(FRAME_RATE)
             self._time_elapsed_ += dt
