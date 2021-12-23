@@ -54,6 +54,7 @@ class Menu:
 
     def _deactive_menu(self):
         self._menu_active = False
+        self._error_message = None
 
     def draw(self):
         self._add_child(self._background, self._background.get_rect(center=(WIN_WIDTH / 2, WIN_HEIGHT / 2)))
@@ -106,9 +107,10 @@ class Menu:
     def is_active(self):
         return self._menu_active
 
-    def activate_menu(self, error_message):
+    def activate_menu(self, error_message=None):
         self._menu_active = True
-        self._error_message = Error(error_message)
+        if error_message is not None:
+            self._error_message = Error(error_message)
 
     def loop(self, player_choices=None):
         GameSound.menu_music.play(-1)
