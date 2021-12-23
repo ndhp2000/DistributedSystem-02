@@ -33,6 +33,6 @@ if __name__ == "__main__":
             #menu.print("Server is overload, try to play again later")
             message = "Server is overload, try to play again later"
 
-        menu.activate_menu()
+        menu.activate_menu(message)
 
 

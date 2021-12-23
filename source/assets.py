@@ -18,5 +18,6 @@ class PlayerViewAsset:
 class MenuViewAsset:
     menu = 'assets/images/menu_sprites.png'
     background = 'assets/images/background.png'
-    font = 'assets/fonts/Allura-Regular.otf'
     button_background = 'assets/images/button_background.png'
+    logo = 'assets/images/logo.png'
+    font = 'assets/fonts/Roboto-Medium.ttf'
