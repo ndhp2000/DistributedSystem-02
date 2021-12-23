@@ -16,6 +16,10 @@ class ServerIsOverload(Exception):
     pass
 
 
+class ExitToGameMenu(Exception):
+    pass
+
+
 class Controller:
     COOLDOWN_COMMAND = 5
 
@@ -23,6 +27,7 @@ class Controller:
         # TODO - DELETE
         self.debug_file = open(log_file_debug, "w")
 
+        self._exit_flag = False
         self._is_bot_player = is_auto_play
         self._counter = self.COOLDOWN_COMMAND
         self._events_queue_ = deque()
@@ -33,8 +38,6 @@ class Controller:
         if self._instance_id_ is None:
             self._network.safety_closed()
             raise ServerIsOverload
-
-        pygame.init()
 
         # Init state
         self._time_elapsed_ = 0
@@ -64,11 +67,6 @@ class Controller:
         self._view_.init_notification()
         self._view_.init_players(self._logic_.get_players())
         self._view_.init_bullets(self._logic_.get_bullets())
-
-        # Init menu
-        self._menu = Menu()
-
-        pygame.mixer.init()
 
         self._view_.update()
 
@@ -103,20 +101,6 @@ class Controller:
                 return list(PLAYER_MOVEMENT.keys())[rand_num - 1]
         return None
 
-    def menu(self):
-        while True:
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    exit()
-                elif event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
-                    self._menu.handle_event(event)
-
-            self._menu.draw()
-
-            if not self._menu.is_active():
-                break
-
     def _enqueue_valid_events_(self, events):
         """
         :param events:
@@ -136,12 +120,14 @@ class Controller:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
-                    self.debug_file.close()
-                    self._network.safety_closed()
+                    self.close()
                     exit()
                 if event.type == pygame.KEYDOWN:
                     if not self._is_bot_player:
                         input_event = self._get_event_(event.key)
+
+                    if event.key == pygame.K_q:
+                        self._exit_flag = True
 
             if self._is_bot_player:
                 input_event = self._event_generator_()
@@ -174,11 +160,14 @@ class Controller:
         self.debug_file.write(str(self._current_frame_) + " : " + str(self._logic_.serialize()) + "\n")
 
     def loop(self):
-        while True:
-            while True:
-                dt = self._clock.tick(FRAME_RATE)
-                self._time_elapsed_ += dt
-                while self._time_elapsed_ >= FRAME_RATE_MS:
-                    self._time_elapsed_ -= FRAME_RATE_MS
-                    self._current_frame_ += 1
-                    self._update(update_view=self._time_elapsed_ < FRAME_RATE_MS)
+        while not self._exit_flag:
+            dt = self._clock.tick(FRAME_RATE)
+            self._time_elapsed_ += dt
+            while self._time_elapsed_ >= FRAME_RATE_MS:
+                self._time_elapsed_ -= FRAME_RATE_MS
+                self._current_frame_ += 1
+                self._update(update_view=self._time_elapsed_ < FRAME_RATE_MS)
+
+    def close(self):
+        self.debug_file.close()
+        self._network.safety_closed()

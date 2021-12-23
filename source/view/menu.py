@@ -1,5 +1,7 @@
 import pygame
+from pygame.constants import *
 from source.config import *
+from source.utils.sound import GameSound
 from source.view.input_box import InputBox
 from source.view.spritesheet import SpriteSheet
 
@@ -53,7 +55,6 @@ class Menu:
         if event.type == pygame.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
             if self._input_box.get_rect().collidepoint(event.pos):
-                print('test input')
                 # Toggle the active variable.
                 if self._input_box.is_active():
                     self._input_box.set_active(False)
@@ -85,3 +86,22 @@ class Menu:
 
     def is_active(self):
         return self._menu_active
+
+    def activate_menu(self):
+        self._menu_active = True
+
+    def loop(self):
+        GameSound.menu_music.play(-1)
+        while True:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
+                    self.handle_event(event)
+
+            self.draw()
+
+            if not self.is_active():
+                GameSound.menu_music.stop()
+                break

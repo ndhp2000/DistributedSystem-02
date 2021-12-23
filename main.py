@@ -1,8 +1,11 @@
 import logging
 import sys
 
-from source.controller.controller import Controller, ServerIsOverload
+import pygame
+
+from source.controller.controller import Controller, ServerIsOverload, ExitToGameMenu
 from source.utils.log import GameLog
+from source.view.menu import Menu
 
 GameLog.load_config()
 
@@ -10,11 +13,24 @@ if __name__ == "__main__":
     logger = logging.getLogger("game-debug")
     logger.info("Hello-World")
 
-    try:
-        controller = Controller(is_auto_play=sys.argv[1] == "1", log_file_debug=sys.argv[2] + ".txt")
-        controller.menu()
+    pygame.init()
+    pygame.mixer.init()
+    menu = Menu()
+
+    while True:
+        menu.loop()
+
+        try:
+            controller = Controller(is_auto_play=sys.argv[1] == "1", log_file_debug=sys.argv[2] + ".txt")
+        except ConnectionAbortedError:
+            menu.print("Can not connect to server")
+            print("Can not connect to server")
+        except ServerIsOverload:
+            menu.print("Server is overload, try to play again later")
+            print("Server is overload, try to play again later")
+
         controller.loop()
-    except ConnectionAbortedError:
-        print("Can not connect to server")
-    except ServerIsOverload:
-        print("Server is overload, try to play again later")
+        controller.close()
+        menu.activate_menu()
+
+
