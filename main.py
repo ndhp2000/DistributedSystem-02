@@ -1,6 +1,3 @@
-import logging
-import sys
-
 import pygame
 
 from source.controller.controller import Controller, ServerIsOverload
@@ -10,20 +7,16 @@ from source.view.menu import Menu
 GameLog.load_config()
 
 if __name__ == "__main__":
-    logger = logging.getLogger("game-debug")
-    logger.info("Hello-World")
-
     pygame.init()
     pygame.mixer.init()
     menu = Menu()
-
     while True:
         player_choices = [0]
         menu.loop(player_choices)
         message = None
-        
+
         try:
-            controller = Controller(is_auto_play=player_choices[0] == 1, log_file_debug=sys.argv[1] + ".txt")
+            controller = Controller(is_auto_play=player_choices[0] == 1)
             controller.loop()
             controller.close()
         except ConnectionAbortedError:

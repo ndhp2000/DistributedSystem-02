@@ -19,10 +19,7 @@ class ServerIsOverload(Exception):
 class Controller:
     COOLDOWN_COMMAND = 5
 
-    def __init__(self, is_auto_play=False, log_file_debug="a.txt"):
-        # TODO - DELETE
-        self.debug_file = open(log_file_debug, "w")
-
+    def __init__(self, is_auto_play=False):
         self._exit_flag = False
         self._is_bot_player = is_auto_play
         self._counter = self.COOLDOWN_COMMAND
@@ -128,7 +125,6 @@ class Controller:
 
         # Check if events is out of date and add to queue
         if not self._enqueue_valid_events_(events):
-            self.debug_file.write("RESET\n")
             self._reset_state_()
             return
 
@@ -144,7 +140,6 @@ class Controller:
         self._logic_.update(processing_events, self._user_id_)
         if update_view:
             self._view_.update()
-        self.debug_file.write(str(self._current_frame_) + " : " + str(self._logic_.serialize()) + "\n")
 
     def loop(self):
         GameSound.gameplay_music.play(-1)
@@ -158,5 +153,4 @@ class Controller:
         GameSound.gameplay_music.stop()
 
     def close(self):
-        self.debug_file.close()
         self._network.safety_closed()
