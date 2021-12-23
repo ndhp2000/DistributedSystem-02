@@ -57,6 +57,7 @@ class Controller:
         # Init Logic
         self._logic_ = MainGameLogic()
         self._logic_.init_maze(initial_state['state']['maze']['seed'])
+        self._logic_.init_notification()
         self._logic_.init_players(initial_state['state']['players'], self._user_id_)
         self._logic_.init_bullets(initial_state['state']['bullets'])
         for event in initial_state['unprocessed_events']:
@@ -65,7 +66,7 @@ class Controller:
         self._view_ = MainGameView()
         self._view_.init_maze(self._logic_.get_maze())
         self._view_.init_scoreboard(self._logic_.get_players())
-        self._view_.init_notification()
+        self._view_.init_notification(self._logic_.get_notification())
         self._view_.init_players(self._logic_.get_players())
         self._view_.init_bullets(self._logic_.get_bullets())
 

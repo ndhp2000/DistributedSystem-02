@@ -17,6 +17,7 @@ class PlayerView(BaseView):
 
         self.r = self._player.get_maze_radius() * (WIN_WIDTH / MAP_WIDTH) * 0.5
         super().__init__(self.r * 2, self.r * 2)
+        self._screen_ = pygame.Surface((self.r * 2, self.r * 2), pygame.SRCALPHA, 32)
 
         self._image = None
         self.get_sprite()

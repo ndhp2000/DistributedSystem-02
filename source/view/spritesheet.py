@@ -15,7 +15,7 @@ class SpriteSheet:
     TILE_HEIGHT = 16
 
     def __init__(self, filename):
-        self._sheet_ = pygame.image.load(filename)
+        self._sheet_ = pygame.image.load(filename).convert_alpha()
 
     def get_sheet(self):
         return self._sheet_
@@ -31,13 +31,7 @@ class SpriteSheet:
 
         rect = pygame.Rect(anchor, dim)
         image = pygame.Surface(rect.size, pygame.SRCALPHA)
-
         image.blit(SpriteSheet._sheets[sheet_name].get_sheet(), (0, 0), rect)
-
-        if colorkey is not None:
-            if colorkey == -1:
-                colorkey = image.get_at((0, 0))
-            image.set_colorkey(colorkey, pygame.RLEACCEL)
         image = image.convert_alpha()
 
         return image

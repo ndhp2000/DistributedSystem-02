@@ -44,7 +44,7 @@ class MainGameView:
         self._bullets_view_.draw(self._screen_)
 
         # Update Notification View
-        # self._notification_screen_.print()
+        self._notification_screen_.reload()
         notification_screen_offset_y = self._NOTIFICATION_SCREEN_OFFSET_[0] * self._screen_.get_height()
         notification_screen_offset_x = self._NOTIFICATION_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._notification_screen_.add_to_parent(self._screen_,
@@ -80,13 +80,15 @@ class MainGameView:
         self._scoreboard_screen_ = ScoreboardView(scoreboard_screen_height, scoreboard_screen_width, players)
         self._scoreboard_screen_.add_to_parent(self._screen_, (scoreboard_screen_offset_x, scoreboard_screen_offset_y))
 
-    def init_notification(self):
+    def init_notification(self, notification):
         notification_screen_height = int(self._screen_.get_height() * self._NOTIFICATION_SCREEN_RATIO_[0])
         notification_screen_width = int(self._screen_.get_width() * self._NOTIFICATION_SCREEN_RATIO_[1])
         notification_screen_offset_y = self._NOTIFICATION_SCREEN_OFFSET_[0] * self._screen_.get_height()
         notification_screen_offset_x = self._NOTIFICATION_SCREEN_OFFSET_[1] * self._screen_.get_width()
-        self._notification_screen_ = NotificationView(notification_screen_height, notification_screen_width)
-        self._notification_screen_.add_to_parent(self._screen_, (notification_screen_offset_x, notification_screen_offset_y))
+        self._notification_screen_ = NotificationView(notification_screen_height, notification_screen_width,
+                                                      notification)
+        self._notification_screen_.add_to_parent(self._screen_,
+                                                 (notification_screen_offset_x, notification_screen_offset_y))
 
     def print_log(self, text):
         self._notification_screen_.print(text)
