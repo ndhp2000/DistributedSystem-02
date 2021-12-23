@@ -1,6 +1,7 @@
 import pygame
 
 from source.config import CONSOLE_FONT_SIZE
+from source.model.notification import Notification
 from source.view.base_view import BaseView
 
 
@@ -11,8 +12,9 @@ class NotificationView(BaseView):
     ROWS_PADDING_RATIO = 1 / 20
     TEXT_PREFIX = "$maze-game: "
 
-    def __init__(self, screen_height, screen_width):
+    def __init__(self, screen_height, screen_width, notification: Notification):
         super().__init__(screen_height, screen_width)
+        self._notification_ = notification
         self._text_font_ = pygame.font.SysFont('notomono', CONSOLE_FONT_SIZE)
         self._text_list_ = []
 
@@ -35,6 +37,7 @@ class NotificationView(BaseView):
             for row, text in enumerate(self._text_list_):
                 self._print_row_(text, row)
 
-    def _unit_test_(self):
-        for i in range(15):
-            self.print("log log log log log log log" + str(i))
+    def reload(self):
+        for message in self._notification_.get_messages():
+            self.print(message)
+        self._notification_.clear()

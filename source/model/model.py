@@ -2,6 +2,7 @@ from source.config import *
 from source.model.bullet import Bullet
 from source.model.entity_group import Group, PlayerGroup
 from source.model.maze import Maze
+from source.model.notification import Notification
 from source.model.player import Player
 
 
@@ -13,6 +14,7 @@ class MainGameLogic:
             '_LOG_OUT_': self._handle_log_out_,
         }
         self._maze_ = None
+        self._notification_ = None
         self._players_ = PlayerGroup()
         self._bullets_ = Group()
         self._pause_flag = False
@@ -37,6 +39,9 @@ class MainGameLogic:
             self._bullets_.add(Bullet(self._bullets_, bullet['id'], bullet['player_id'], bullet['position'],
                                       bullet['direction'], self._maze_))
 
+    def init_notification(self):
+        self._notification_ = Notification()
+
     def get_maze(self):
         return self._maze_
 
@@ -45,6 +50,9 @@ class MainGameLogic:
 
     def get_bullets(self):
         return self._bullets_
+
+    def get_notification(self):
+        return self._notification_
 
     def add_player(self, new_player):
         self._players_.add(new_player)
@@ -64,6 +72,8 @@ class MainGameLogic:
         for player in players_hit:
             for bullet in players_hit[player]:
                 self._players_.reward_player(bullet.get_origin_id(), PLAYER_REWARD)
+                self._notification_.append(
+                    "User {} headed shot user {}".format(bullet.get_origin_id(), player.get_id()))
                 bullet.remove()
             player.hit(BULLET_DAMAGE)
 
@@ -80,6 +90,7 @@ class MainGameLogic:
 
     def _handle_join_game_(self, event, user_id):
         is_main_player = (event['user_id'] == user_id)
+        self._notification_.append("User {} has joined the game".format(event['user_id']))
         self.add_player(
             Player(self._maze_, event['user_id'], self._players_, event['seed'], is_main_player=is_main_player))
 
@@ -87,4 +98,5 @@ class MainGameLogic:
         self._players_.update(event, self._bullets_)
 
     def _handle_log_out_(self, event, user_id):
+        self._notification_.append("User {} has logged out the game".format(event['user_id']))
         self._players_.remove_by_id(event['user_id'])
