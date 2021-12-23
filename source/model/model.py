@@ -21,14 +21,16 @@ class MainGameLogic:
     def init_maze(self, maze_seed):
         self._maze_ = Maze(maze_seed)
 
-    def init_players(self, players):
+    def init_players(self, players, user_id):
         for player in players:
+            is_main_player = (player['id'] == user_id)
             self._players_.add(Player(self._maze_, player['id'], self._players_, player['seed'],
                                       position=np.array(player['position']),
                                       current_direction=player['current_direction'],
                                       next_direction=player['next_direction'],
                                       bullet_cooldown=player['bullet_cooldown'], player_hp=player['hp'],
-                                      bullet_counter=player['bullet_counter'], dead_counter=player['dead_counter']))
+                                      bullet_counter=player['bullet_counter'], dead_counter=player['dead_counter'],
+                                      is_main_player=is_main_player))
 
     def init_bullets(self, bullets):
         for bullet in bullets:

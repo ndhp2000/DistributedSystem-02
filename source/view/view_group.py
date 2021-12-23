@@ -41,7 +41,7 @@ class PlayerViewGroup(ViewGroup):
             for entity in self._model_group:
                 self._view_entities[entity.get_id()] = self._view_class_init_function(entity)
                 self._name_tags[entity.get_id()] = self._name_tag_font_.render(
-                    f'P{self.entity.get_id()}', True, (255, 255, 255))
+                    f'P{entity.get_id()}', True, (255, 255, 255))
 
         for entity_id in self._view_entities:
             view_entity = self._view_entities[entity_id]

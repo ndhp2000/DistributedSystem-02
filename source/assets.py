@@ -2,7 +2,7 @@ class MazeViewAsset:
     horizontal_line = 'assets/images/line_horizontal.png'
     vertical_line = 'assets/images/line_vertical.png'
     background = 'assets/images/maze_background.png'
-    tile = 'assets/images/maze_tile.png'
+    maze_tile = 'assets/images/maze_tile.png'
 
 class PlayerViewAsset:
     player = 'assets/images/player_sprites.png'

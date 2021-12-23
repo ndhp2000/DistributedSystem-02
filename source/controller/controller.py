@@ -53,7 +53,7 @@ class Controller:
         # Init Logic
         self._logic_ = MainGameLogic()
         self._logic_.init_maze(initial_state['state']['maze']['seed'])
-        self._logic_.init_players(initial_state['state']['players'])
+        self._logic_.init_players(initial_state['state']['players'], self._user_id_)
         self._logic_.init_bullets(initial_state['state']['bullets'])
         for event in initial_state['unprocessed_events']:
             self._events_queue_.append(event)
@@ -67,6 +67,8 @@ class Controller:
 
         # Init menu
         self._menu = Menu()
+
+        pygame.mixer.init()
 
         self._view_.update()
 
@@ -140,6 +142,7 @@ class Controller:
                 if event.type == pygame.KEYDOWN:
                     if not self._is_bot_player:
                         input_event = self._get_event_(event.key)
+
             if self._is_bot_player:
                 input_event = self._event_generator_()
 

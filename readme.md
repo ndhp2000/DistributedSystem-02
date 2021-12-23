@@ -26,12 +26,14 @@ HP:
 TP: + Client: 
 
 1. dem self._screen_ -> class attribute, doi update -> location
-2. Tao TagGroup 
-3. Them main menu
-4. Audio
-5. Animation player hit
-6. Sua sprite bang assets (optional)
-7. Tester => debug => client (optional)
-8. Animation shooting (optional)
-9. Doc code server (optional)
-10. 23h Toi T4 xong view
+2. Tao TagGroup `
+3. Them main menu`
+4. Quay lai menu 
+5. Audio
+6. Music menu x
+7. Animation player hit
+8. Sua sprite bang assets (optional)
+9. Tester => debug => client (optional)
+10. Animation shooting (optional)
+11. Doc code server (optional)
+12. 23h Toi T4 xong view

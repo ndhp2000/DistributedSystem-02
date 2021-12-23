@@ -1,15 +1,18 @@
 import random
 
+import pygame
+
 from source.config import *
 from source.model.base_entity import Entity
 from source.model.bullet import Bullet
 from source.model.maze import Maze
 from source.model.utils import convert_player_direction_to_maze_direction
+from source.utils.sound import GameSound
 
 
 class Player(Entity):
     def __init__(self, maze: Maze, player_id, players_group, seed, position=None, current_direction=None,
-                 next_direction=None, bullet_cooldown=0, player_hp=PLAYER_HP, bullet_counter=0, dead_counter=0):
+                 next_direction=None, bullet_cooldown=0, player_hp=PLAYER_HP, bullet_counter=0, dead_counter=0, is_main_player=False):
         super().__init__(player_id, PLAYER_MAZE_RADIUS, position, PLAYER_MOVING_SPEED, players_group)
         self._maze_ = maze
         self._hp_ = player_hp
@@ -20,6 +23,7 @@ class Player(Entity):
         self._next_direction_ = next_direction
         self._bullet_counter_ = bullet_counter
         self._dead_counter_ = dead_counter
+        self._is_main_player = is_main_player
         for i in range(self._dead_counter_):  # Refresh the random seed
             x = self._random_.randint(0, MAP_WIDTH - 1)
             y = self._random_.randint(0, MAP_HEIGHT - 1)
@@ -81,6 +85,7 @@ class Player(Entity):
                     self._next_direction_ = event['action']
                 elif event['action'] in PLAYER_SHOOT:
                     self._shoot_(bullets_group)
+                    GameSound.shoot_sound.play()
         else:
             self._move()
 
@@ -130,6 +135,9 @@ class Player(Entity):
 
     def reward(self, hp):
         self._hp_ += hp
+
+    def is_main_player(self):
+        return self._is_main_player
 
     def serialize(self):
         return {

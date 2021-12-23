@@ -19,14 +19,12 @@ class PlayerView(BaseView):
         super().__init__(self.r * 2, self.r * 2)
 
         self._image = None
-
         self.get_sprite()
         self._image = pygame.transform.scale(self._image, (self.r * 2, self.r * 2))
 
         self._add_child(self._image,
                         (int(self._screen_.get_height() / 2),
                          int(self._screen_.get_width() / 2)))
-
 
     def get_sprite(self):
         direction = self._player.get_current_direction()
