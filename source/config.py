@@ -29,6 +29,8 @@ MAXIMUM_PLAYERS = 20
 PLAYER = "human"
 MACHINE = "machine"
 ENEMY = "enemy"
+AUTO_PLAY = 1
+MANUAL_PLAY = 0
 
 PLAYER_HP = 10
 PLAYER_MOVING_SPEED = 1 / 16  # box per frame

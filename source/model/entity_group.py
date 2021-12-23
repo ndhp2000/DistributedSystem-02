@@ -51,7 +51,7 @@ class Group(AbstractGroup):
         super().add(entity)
 
     def update(self, *args, **kwargs):
-        for entity in self._entities_dict:
+        for entity in sorted(self._entities_dict.keys()):
             if self.has(entity):
                 entity.update(*args, **kwargs)
         for entity in sorted(self._entities_dict.keys()):

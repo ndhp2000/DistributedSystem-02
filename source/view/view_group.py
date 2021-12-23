@@ -32,11 +32,8 @@ class PlayerViewGroup(ViewGroup):
             self._name_tags[entity.get_id()] = self._name_tag_font_.render(f'P{entity.get_id()}', True, (255, 255, 255))
 
     def draw(self, screen):
-        #lost_entities = self._model_group.get_removed_entities()
         index_entities_group = self._model_group.get_index_entities()
-        print(len(self._view_entities), len(self._model_group), len(index_entities_group))
         if len(self._model_group) < len(self._view_entities):
-            print('True smaller')
             removed_view_entities = []
             for entity_id in self._view_entities:
                 if entity_id not in index_entities_group:
@@ -46,7 +43,6 @@ class PlayerViewGroup(ViewGroup):
                 del self._view_entities[entity_id]
 
         if len(self._model_group) > len(self._view_entities):
-            print('True larger')
             self._view_entities = {}
             for entity in self._model_group:
                 self._view_entities[entity.get_id()] = self._view_class_init_function(entity)
