@@ -29,15 +29,15 @@ class PlayerView(BaseView):
 
     def get_sprite(self):
         direction = self._player.get_current_direction()
-        x = 0
 
+        x = 0
         if self._player.is_main_player():
             x = 1 * self.TILE_WIDTH
         else:
             x = 0
-
+            
+        anchor = None
         dim = (self.TILE_WIDTH, self.TILE_HEIGHT)
-
         if direction == UP:
             anchor = (x, 2 * self.TILE_HEIGHT)
         elif direction == DOWN:

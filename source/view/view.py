@@ -6,8 +6,6 @@ from source.view.maze import MazeView
 from source.view.notification import NotificationView
 from source.view.player import PlayerView
 from source.view.scoreboard import ScoreboardView
-from source.view.utils import convert_maze_to_world_pos
-from source.model.entity_group import Group
 from source.view.view_group import ViewGroup, PlayerViewGroup
 
 
@@ -56,6 +54,7 @@ class MainGameView:
         scoreboard_screen_offset_x = self._SCOREBOARD_SCREEN_OFFSET_[1] * self._screen_.get_width()
         self._scoreboard_screen_.add_to_parent(self._screen_, (scoreboard_screen_offset_x, scoreboard_screen_offset_y))
 
+        # Update globally
         self._screen_display_.update()
 
     def init_maze(self, maze):
@@ -89,6 +88,3 @@ class MainGameView:
                                                       notification)
         self._notification_screen_.add_to_parent(self._screen_,
                                                  (notification_screen_offset_x, notification_screen_offset_y))
-
-    def print_log(self, text):
-        self._notification_screen_.print(text)

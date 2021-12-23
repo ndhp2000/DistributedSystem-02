@@ -2,8 +2,9 @@ import pygame
 from source.view.player import PlayerView
 from source.config import *
 
+
 class ViewGroup:
-    def __init__(self, model_group, view_class_init_function): # View class init
+    def __init__(self, model_group, view_class_init_function):  # View class init
         super().__init__()
         self._view_class_init_function = view_class_init_function
         self._model_group = model_group

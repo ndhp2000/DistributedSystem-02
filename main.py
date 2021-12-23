@@ -3,7 +3,7 @@ import sys
 
 import pygame
 
-from source.controller.controller import Controller, ServerIsOverload, ExitToGameMenu
+from source.controller.controller import Controller, ServerIsOverload
 from source.utils.log import GameLog
 from source.view.menu import Menu
 
@@ -27,12 +27,11 @@ if __name__ == "__main__":
             controller.loop()
             controller.close()
         except ConnectionAbortedError:
-            #menu.print("Can not connect to server")
+            # menu.print("Can not connect to server")
             message = "Can not connect to server"
         except ServerIsOverload:
-            #menu.print("Server is overload, try to play again later")
+            # menu.print("Server is overload, try to play again later")
             message = "Server is overload, try to play again later"
 
         menu.activate_menu(message)
-
 
