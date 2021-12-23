@@ -19,8 +19,12 @@ class ScoreboardView(BaseView):
         self._text_font_ = pygame.font.SysFont('notomono', CONSOLE_FONT_SIZE)
         self._draw_borders_()
 
-    def _print_(self, text, row, col):
-        text_surface = self._text_font_.render(text, True, (255, 255, 255))
+    def _print_(self, text, row, col, set_special=False):
+        if set_special:
+            color = (255, 0, 255)
+        else:
+            color = (255, 255, 255)
+        text_surface = self._text_font_.render(text, True, color)
         x = self._screen_.get_width() * (self.COLUMNS_WIDTH_OFFSET[col] + self.COLUMNS_WIDTH_RATIO[1] / 2)
         y = self._screen_.get_height() * (
                 self.NAME_TAG_HEIGHT_RATIO + self.COLUMNS_HEIGHT_RATIO * row + self.COLUMNS_HEIGHT_RATIO / 2)
@@ -45,6 +49,6 @@ class ScoreboardView(BaseView):
         self._draw_borders_()
         scoreboard = self._players_logic_.get_scores()
         for row, record in enumerate(scoreboard):
-            self._print_(str(record[0]), row + 1, 0)
-            self._print_(str(record[1]), row + 1, 1)
-            self._print_(str(record[2]), row + 1, 2)
+            self._print_(str(record[0]), row + 1, 0, record[3])
+            self._print_(str(record[1]), row + 1, 1, record[3])
+            self._print_(str(record[2]), row + 1, 2, record[3])

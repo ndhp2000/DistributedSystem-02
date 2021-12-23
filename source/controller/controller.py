@@ -35,6 +35,7 @@ class Controller:
         # Init Network
         self._network = GameNetwork()
         self._instance_id_, self._user_id_ = self._network.join_game()  # Sign-in to server.
+        print(self._instance_id_, " ", self._user_id_)
         if self._instance_id_ is None:
             self._network.safety_closed()
             raise ServerIsOverload
@@ -154,7 +155,7 @@ class Controller:
                 break
 
         # Update with events
-        self._logic_.update(processing_events)
+        self._logic_.update(processing_events, self._user_id_)
         if update_view:
             self._view_.update()
         self.debug_file.write(str(self._current_frame_) + " : " + str(self._logic_.serialize()) + "\n")

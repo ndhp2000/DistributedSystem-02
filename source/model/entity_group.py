@@ -97,8 +97,8 @@ class PlayerGroup(Group):
     def get_scores(self):
         result = []
         for player in self._entities_dict:
-            result.append((player.get_id(), player.get_hp(), player.get_player_type()))
-        result = sorted(result, key=lambda p: p[1])
+            result.append((player.get_id(), player.get_hp(), player.get_player_type(), player.is_main_player()))
+        result = sorted(result, key=lambda p: p[1], reverse=True)
         return result
 
     def reward_player(self, player_id, reward_amount):
