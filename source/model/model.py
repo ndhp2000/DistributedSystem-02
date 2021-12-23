@@ -49,10 +49,10 @@ class MainGameLogic:
     def add_player(self, new_player):
         self._players_.add(new_player)
 
-    def update(self, events):
+    def update(self, events, user_id):
         # Handle actions (shoot, change direction)
         for event in events:
-            self._handle_event_(event)
+            self._handle_event_(event, user_id)
         # Moving
         self._players_.update(None, self._bullets_)
         self._bullets_.update()
@@ -75,14 +75,16 @@ class MainGameLogic:
         }
         return result
 
-    def _handle_event_(self, event):
-        self.HANDLERS_MAP[event['type']](event)
+    def _handle_event_(self, event, user_id):
+        self.HANDLERS_MAP[event['type']](event, user_id)
 
-    def _handle_join_game_(self, event):
-        self.add_player(Player(self._maze_, event['user_id'], self._players_, event['seed']))
+    def _handle_join_game_(self, event, user_id):
+        is_main_player = (event['user_id'] == user_id)
+        self.add_player(
+            Player(self._maze_, event['user_id'], self._players_, event['seed'], is_main_player=is_main_player))
 
-    def _handle_game_action_(self, event):
+    def _handle_game_action_(self, event, user_id):
         self._players_.update(event, self._bullets_)
 
-    def _handle_log_out_(self, event):
+    def _handle_log_out_(self, event, user_id):
         self._players_.remove_by_id(event['user_id'])

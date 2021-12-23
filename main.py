@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     try:
         controller = Controller(is_auto_play=sys.argv[1] == "1", log_file_debug=sys.argv[2] + ".txt")
-        controller.menu()
+        # controller.menu()
         controller.loop()
     except ConnectionAbortedError:
         print("Can not connect to server")

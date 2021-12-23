@@ -12,7 +12,8 @@ from source.utils.sound import GameSound
 
 class Player(Entity):
     def __init__(self, maze: Maze, player_id, players_group, seed, position=None, current_direction=None,
-                 next_direction=None, bullet_cooldown=0, player_hp=PLAYER_HP, bullet_counter=0, dead_counter=0, is_main_player=False):
+                 next_direction=None, bullet_cooldown=0, player_hp=PLAYER_HP, bullet_counter=0, dead_counter=0,
+                 is_main_player=False):
         super().__init__(player_id, PLAYER_MAZE_RADIUS, position, PLAYER_MOVING_SPEED, players_group)
         self._maze_ = maze
         self._hp_ = player_hp
@@ -25,8 +26,8 @@ class Player(Entity):
         self._dead_counter_ = dead_counter
         self._is_main_player = is_main_player
         for i in range(self._dead_counter_):  # Refresh the random seed
-            x = self._random_.randint(0, MAP_WIDTH - 1)
-            y = self._random_.randint(0, MAP_HEIGHT - 1)
+            self._random_.randint(0, MAP_WIDTH - 1)
+            self._random_.randint(0, MAP_HEIGHT - 1)
 
         if self._position_ is None:
             self._rand_position_and_direction()
@@ -152,9 +153,11 @@ class Player(Entity):
             'dead_counter': self._dead_counter_
         }
 
-    @staticmethod
-    def get_player_type():
-        return 'human'
+    def get_player_type(self):
+        if self._is_main_player:
+            return "main"
+        else:
+            return "enemy"
 
     def __lt__(self, other):
         return self.get_id() < other.get_id()
