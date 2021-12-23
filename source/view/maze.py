@@ -1,25 +1,19 @@
-import random
-
 import pygame
 
 from .base_view import BaseView
-from ..assets import MazeViewAsset
+from source.utils.assets import MazeViewAsset
 from ..model.maze import Maze
 
 
 class MazeView(BaseView):
-    BACKGROUND_SIZE = (640, 640)
 
     def __init__(self, maze: Maze, screen_height, screen_width):
         super().__init__(screen_height, screen_width)
         self._maze_ = maze
         self._box_length_ = int(self._screen_.get_height() / self._maze_.get_height())
-        self._background_ratio = self.BACKGROUND_SIZE[0] / self._screen_.get_width()
-
         self._vertical_line = pygame.image.load(MazeViewAsset.vertical_line).convert_alpha()
         self._horizontal_line = pygame.image.load(MazeViewAsset.horizontal_line).convert_alpha()
         self._maze_tile = pygame.image.load(MazeViewAsset.maze_tile).convert_alpha()
-
         self._draw_maze_()
 
     def _draw_maze_(self):

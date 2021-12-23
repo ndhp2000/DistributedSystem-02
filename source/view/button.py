@@ -1,7 +1,7 @@
 import pygame
 
 from source.view.base_view import BaseView
-from source.assets import MenuViewAsset
+from source.utils.assets import MenuViewAsset
 from source.config import *
 
 

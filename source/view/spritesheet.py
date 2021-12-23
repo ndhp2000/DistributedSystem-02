@@ -1,5 +1,5 @@
 import pygame
-from source.assets import PlayerViewAsset, MenuViewAsset, MazeViewAsset
+from source.utils.assets import PlayerViewAsset, MenuViewAsset, MazeViewAsset
 
 
 class SpriteSheet:

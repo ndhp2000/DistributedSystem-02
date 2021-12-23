@@ -8,16 +8,10 @@ from pygame.locals import *
 from source.config import *
 from ..model.model import MainGameLogic
 from ..network.network import GameNetwork
-from ..utils.sound import GameSound
 from ..view.view import MainGameView
-from ..view.menu import Menu
 
 
 class ServerIsOverload(Exception):
-    pass
-
-
-class ExitToGameMenu(Exception):
     pass
 
 
@@ -36,7 +30,6 @@ class Controller:
         # Init Network
         self._network = GameNetwork()
         self._instance_id_, self._user_id_ = self._network.join_game()  # Sign-in to server.
-        print(self._instance_id_, " ", self._user_id_)
         if self._instance_id_ is None:
             self._network.safety_closed()
             raise ServerIsOverload
@@ -86,14 +79,10 @@ class Controller:
         if key_pressed == pygame.K_SPACE:
             return SHOOT
         if key_pressed == pygame.K_q:
-            return EXIT  # Pause game for now to debug, change to exit later
+            return EXIT
         return None
 
-    def _event_generator_(self):  # Not used now
-        """
-        Create random event for bot player
-        :return: event
-        """
+    def _event_generator_(self):
         self._counter -= 1
         if self._counter == 0:
             self._counter = self.COOLDOWN_COMMAND
@@ -105,10 +94,6 @@ class Controller:
         return None
 
     def _enqueue_valid_events_(self, events):
-        """
-        :param events:
-        :return: check if event is time-out
-        """
         for event in events:
             if event['timeout'] < self._current_frame_:
                 return False
@@ -128,10 +113,8 @@ class Controller:
                 if event.type == pygame.KEYDOWN:
                     if not self._is_bot_player:
                         input_event = self._get_event_(event.key)
-
                     if event.key == pygame.K_q:
                         self._exit_flag = True
-
             if self._is_bot_player:
                 input_event = self._event_generator_()
 
@@ -141,8 +124,8 @@ class Controller:
 
         # Get events from server to update
         events = self._network.receive(PROCESSED_EVENTS_PER_LOOPS)
-        # Check if events is out of date and add to queue
 
+        # Check if events is out of date and add to queue
         if not self._enqueue_valid_events_(events):
             self.debug_file.write("RESET\n")
             self._reset_state_()
@@ -163,8 +146,6 @@ class Controller:
         self.debug_file.write(str(self._current_frame_) + " : " + str(self._logic_.serialize()) + "\n")
 
     def loop(self):
-        GameSound.gameplay_music.play(-1)
-
         while not self._exit_flag:
             dt = self._clock.tick(FRAME_RATE)
             self._time_elapsed_ += dt
