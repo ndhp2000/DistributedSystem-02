@@ -26,7 +26,7 @@ class Menu:
 
         self._input_box = InputBox(self.INPUT_BOX_OFFSET, self.INPUT_BOX_DIM)
         self._play_button = SpriteSheet.image_at((0, 0), (600, 200), 'MENU')
-        # self._auto_play_button = pygame
+        #  self._auto_play_button = pygame
         # self._play_button =
         self._exit_button = SpriteSheet.image_at((1215, 625), (600, 200), 'MENU')
         self._background = SpriteSheet.image_at((0, 0), (WIN_WIDTH * self.BACKGROUND_RATIO, 160), 'MENU_BACKGROUND')

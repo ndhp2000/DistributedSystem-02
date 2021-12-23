@@ -22,6 +22,8 @@ if __name__ == "__main__":
 
         try:
             controller = Controller(is_auto_play=sys.argv[1] == "1", log_file_debug=sys.argv[2] + ".txt")
+            controller.loop()
+            controller.close()
         except ConnectionAbortedError:
             #menu.print("Can not connect to server")
             print("Can not connect to server")
@@ -29,8 +31,6 @@ if __name__ == "__main__":
             #menu.print("Server is overload, try to play again later")
             print("Server is overload, try to play again later")
 
-        controller.loop()
-        controller.close()
         menu.activate_menu()
 
 
