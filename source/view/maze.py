@@ -1,6 +1,6 @@
 import pygame
 
-from .base_view import BaseView
+from source.view.components.base_view import BaseView
 from source.utils.assets import MazeViewAsset
 from ..model.maze import Maze
 

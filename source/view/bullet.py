@@ -1,7 +1,7 @@
 from source.config import WIN_WIDTH, MAP_WIDTH
 from source.model.bullet import Bullet
 import pygame
-from source.view.base_view import BaseView
+from source.view.components.base_view import BaseView
 from source.view.utils import convert_maze_to_world_pos
 
 

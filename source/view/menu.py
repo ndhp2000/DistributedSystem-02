@@ -4,10 +4,10 @@ from pygame.constants import *
 from source.utils.assets import MenuViewAsset
 from source.config import *
 from source.utils.sound import GameSound
-from source.view.button import Button
-from source.view.input_box import InputBox
-from source.view.spritesheet import SpriteSheet
-from source.view.error import Error
+from source.view.components.button import Button
+from source.view.components.input_box import InputBox
+from source.view.components.spritesheet import SpriteSheet
+from source.view.components.error import Error
 
 
 class Menu:

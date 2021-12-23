@@ -21,7 +21,7 @@ class SpriteSheet:
         return self._sheet_
 
     @staticmethod
-    def image_at(anchor, dim, sheet_name, colorkey=None):
+    def image_at(anchor, dim, sheet_name):
         if SpriteSheet._not_init:
             SpriteSheet._sheets['PLAYER'] = SpriteSheet(PlayerViewAsset.player)
             SpriteSheet._sheets['MAZE_BACKGROUND'] = SpriteSheet(MazeViewAsset.background)

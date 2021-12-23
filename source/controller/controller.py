@@ -155,6 +155,7 @@ class Controller:
                 self._time_elapsed_ -= FRAME_RATE_MS
                 self._current_frame_ += 1
                 self._update(update_view=self._time_elapsed_ < FRAME_RATE_MS)
+        GameSound.gameplay_music.stop()
 
     def close(self):
         self.debug_file.close()

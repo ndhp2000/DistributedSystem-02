@@ -2,7 +2,7 @@ import pygame
 
 from source.config import CONSOLE_FONT_SIZE
 from source.model.notification import Notification
-from source.view.base_view import BaseView
+from source.view.components.base_view import BaseView
 
 
 class NotificationView(BaseView):

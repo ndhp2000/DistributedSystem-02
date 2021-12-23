@@ -1,10 +1,9 @@
 import pygame
 
 from source.config import *
-from source.model.player import Player
-from source.view.base_view import BaseView
+from source.view.components.base_view import BaseView
 from source.view.utils import convert_maze_to_world_pos
-from source.view.spritesheet import SpriteSheet
+from source.view.components.spritesheet import SpriteSheet
 
 
 class PlayerView(BaseView):
@@ -35,7 +34,7 @@ class PlayerView(BaseView):
             x = 1 * self.TILE_WIDTH
         else:
             x = 0
-            
+
         anchor = None
         dim = (self.TILE_WIDTH, self.TILE_HEIGHT)
         if direction == UP:
@@ -47,7 +46,7 @@ class PlayerView(BaseView):
         elif direction == RIGHT:
             anchor = (x, 5 * self.TILE_HEIGHT)
 
-        self._image = SpriteSheet.image_at(anchor, dim, 'PLAYER', -1)
+        self._image = SpriteSheet.image_at(anchor, dim, 'PLAYER')
 
     def get_world_position(self):
         position = self._player.get_position()

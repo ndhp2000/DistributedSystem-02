@@ -1,6 +1,5 @@
 import pygame.font
 
-from source.view.base_view import BaseView
 from source.config import *
 
 
