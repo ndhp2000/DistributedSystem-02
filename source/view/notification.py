@@ -8,9 +8,9 @@ from source.view.base_view import BaseView
 class NotificationView(BaseView):
     NAME_TAG_HEIGHT_RATIO = 1 / 5
     N_LOG_ROWS = 12
-    COLUMNS_HEIGHT_RATIO = 1 / N_LOG_ROWS
     ROWS_PADDING_RATIO = 1 / 20
-    TEXT_PREFIX = "$maze-game: "
+    COLUMNS_HEIGHT_RATIO = (1 - ROWS_PADDING_RATIO) / N_LOG_ROWS
+    TEXT_PREFIX = " $maze-game: "
 
     def __init__(self, screen_height, screen_width, notification: Notification):
         super().__init__(screen_height, screen_width)
@@ -21,7 +21,8 @@ class NotificationView(BaseView):
     def _print_row_(self, text, row):
         text_surface = self._text_font_.render(self.TEXT_PREFIX + text, True, (255, 255, 255))
         x = text_surface.get_width() / 2
-        y = self._screen_.get_height() * (self.COLUMNS_HEIGHT_RATIO * row + self.COLUMNS_HEIGHT_RATIO / 2)
+        y = self._screen_.get_height() * (
+                self.ROWS_PADDING_RATIO + self.COLUMNS_HEIGHT_RATIO * row + self.COLUMNS_HEIGHT_RATIO / 2)
         self._add_child(text_surface, (x, y))
 
     def print(self, text=None):

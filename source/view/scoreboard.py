@@ -7,7 +7,7 @@ from source.view.base_view import BaseView
 
 
 class ScoreboardView(BaseView):
-    NAME_TAG_HEIGHT_RATIO = 1 / 5
+    NAME_TAG_HEIGHT_RATIO = 1 / 4
     COLUMNS_WIDTH_RATIO = [2 / 7, 2 / 7, 2 / 7]
     COLUMNS_WIDTH_OFFSET = [1 / 14, 5 / 14, 9 / 14]
     COLUMNS_HEIGHT_RATIO = 1 / 10
@@ -21,7 +21,7 @@ class ScoreboardView(BaseView):
 
     def _print_(self, text, row, col, set_special=False):
         if set_special:
-            color = (255, 0, 255)
+            color = (255, 0, 0)
         else:
             color = (255, 255, 255)
         text_surface = self._text_font_.render(text, True, color)
@@ -31,10 +31,21 @@ class ScoreboardView(BaseView):
         self._add_child(text_surface, (x, y))
 
     def _draw_borders_(self):
-        vertical_line = pygame.image.load(MazeViewAsset.vertical_line).convert()
-        vertical_line = pygame.transform.scale(vertical_line, (vertical_line.get_width(), self._screen_.get_height()))
-        self._add_child(vertical_line, (0, self._screen_.get_height() / 2))
-        self._add_child(vertical_line, (self._screen_.get_width(), self._screen_.get_height() / 2))
+        vertical_line = pygame.image.load(MazeViewAsset.vertical_line).convert_alpha()
+        vertical_line = pygame.transform.scale(vertical_line,
+                                               (vertical_line.get_width() * 0.2, self._screen_.get_height()))
+        horizontal_line = pygame.image.load(MazeViewAsset.horizontal_line).convert_alpha()
+        horizontal_line = pygame.transform.scale(horizontal_line,
+                                                 (self._screen_.get_width(), horizontal_line.get_height() * 0.1))
+        maze_tile = pygame.image.load(MazeViewAsset.maze_tile).convert_alpha()
+        maze_tile = pygame.transform.scale(maze_tile, (self._screen_.get_width(), self._screen_.get_height()))
+        maze_tile.set_alpha(128)
+
+        self._add_child(maze_tile, (self._screen_.get_width() / 2, self._screen_.get_height() / 2))
+        self._add_child(vertical_line, (vertical_line.get_width() / 2, self._screen_.get_height() / 2))
+        self._add_child(vertical_line,
+                        (self._screen_.get_width() - vertical_line.get_width() / 2, self._screen_.get_height() / 2))
+        self._add_child(horizontal_line, (self._screen_.get_width() / 2, horizontal_line.get_height() / 2))
 
         name_tag = self._name_tag_font_.render('SCOREBOARD', True, (255, 255, 255))
         self._add_child(name_tag, (self._screen_.get_width() / 2, self._screen_.get_height() *
