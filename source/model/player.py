@@ -79,15 +79,14 @@ class Player(Entity):
             self._next_direction_ = None
 
     def update(self, event, bullets_group):
-        self._bullet_cooldown_ = max(0, self._bullet_cooldown_ - 1)
         if event:
             if event['user_id'] == self._id_:  # Run event with suitable ID.
                 if event['action'] in PLAYER_MOVEMENT:
                     self._next_direction_ = event['action']
                 elif event['action'] in PLAYER_SHOOT:
                     self._shoot_(bullets_group)
-                    GameSound.shoot_sound.play()
         else:
+            self._bullet_cooldown_ = max(0, self._bullet_cooldown_ - 1)
             self._move()
 
     def synchronize(self):
@@ -109,12 +108,13 @@ class Player(Entity):
 
     def _shoot_(self, bullets_group):
         if self._bullet_cooldown_ == 0:
+            GameSound.shoot_sound.play()
             Bullet(bullets_group, (self._id_, self._bullet_counter_), self._id_, np.around(self._position_),
                    self._current_direction_,
                    self._maze_)
             self._bullet_counter_ += 1
             self._bullet_cooldown_ = 4 / BULLET_MOVING_SPEED
-        self._hp_ -= BULLET_COST
+            self._hp_ -= BULLET_COST
 
     def hit(self, damage):
         self._hp_ -= damage
