@@ -34,17 +34,10 @@ class PlayerViewGroup(ViewGroup):
 
     def draw(self, screen):
         index_entities_group = self._model_group.get_index_entities()
-        if len(self._model_group) < len(self._view_entities):
-            removed_view_entities = []
-            for entity_id in self._view_entities:
-                if entity_id not in index_entities_group:
-                    removed_view_entities.append(entity_id)
 
-            for entity_id in removed_view_entities:
-                del self._view_entities[entity_id]
-
-        if len(self._model_group) > len(self._view_entities):
+        if set(index_entities_group.keys()) != set(self._view_entities.keys()):
             self._view_entities = {}
+            self._name_tags = {}
             for entity in self._model_group:
                 self._view_entities[entity.get_id()] = self._view_class_init_function(entity)
                 self._name_tags[entity.get_id()] = self._name_tag_font_.render(
@@ -53,7 +46,6 @@ class PlayerViewGroup(ViewGroup):
         for entity_id in self._view_entities:
             view_entity = self._view_entities[entity_id]
             view_entity.add_to_parent(screen, view_entity.get_world_position(), is_centered=True)
-
             name_tag = self._name_tags[entity_id]
             position = view_entity.get_world_position()
             screen.blit(name_tag, (position[0] + self.NAME_TAG_OFFSET[0], position[1] + self.NAME_TAG_OFFSET[1]))
