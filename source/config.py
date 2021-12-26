@@ -7,7 +7,7 @@ LOGGER = [("game-debug", "./logs"), ("game-view", "./logs"), ("game-controller",
 PROCESSED_EVENTS_PER_LOOPS = 1000
 FRAME_RATE = 45
 FRAME_RATE_MS = int(1000 / FRAME_RATE)
-MAX_PING = 8  # frames
+MAX_PING = 5  # frames
 
 MAP_WIDTH = 32
 MAP_HEIGHT = 16
@@ -17,11 +17,11 @@ NAME_TAG_FONT_SIZE = 32
 CONSOLE_FONT_SIZE = 18
 PLAYER_TAG_FONT_SIZE = 15
 
-SERVER_IP = 'thevncore-lab.mooo.com'
-SERVER_PORT = 20101
+# SERVER_IP = 'thevncore-lab.mooo.com'
+# SERVER_PORT = 20101
 
-# SERVER_IP = '127.0.0.1'
-# SERVER_PORT = 1234
+SERVER_IP = '127.0.0.1'
+SERVER_PORT = 1234
 
 MAXIMUM_PLAYERS = 20
 PLAYER = "human"
